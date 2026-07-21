@@ -4,6 +4,10 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
+  /* The Geist faces are loaded in app/layout.tsx; these map them onto the
+   * font-sans / font-mono utilities so they are actually rendered. */
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -111,6 +115,22 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+}
+
+/*
+ * Auth pages sit on pure black beside a full-bleed photo. Overriding the
+ * surface tokens — rather than painting bg-black — keeps every token-driven
+ * component (separators, outline buttons, popovers) on the same surface.
+ * Must stay after .dark: the page root carries both classes, so this wins
+ * only by source order.
+ */
+.auth-scope {
+  --background: oklch(0 0 0);
+  --card: oklch(0.14 0 0);
+  --popover: oklch(0.14 0 0);
+  --border: oklch(1 0 0 / 14%);
+  --input: oklch(1 0 0 / 18%);
+  --muted-foreground: oklch(0.72 0 0);
 }
 
 @layer base {
