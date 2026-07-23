@@ -9,6 +9,7 @@ import { apiReference } from "@scalar/express-api-reference";
 import { serverRouter, createContext } from "@repo/trpc/server";
 
 import { env } from "./env";
+import cookieParser from "cookie-parser";
 
 export const app = express();
 const openApiDocument = generateOpenApiDocument(serverRouter, {
@@ -17,13 +18,15 @@ const openApiDocument = generateOpenApiDocument(serverRouter, {
   baseUrl: env.BASE_URL.concat("/api"),
 });
 
+app.use(cookieParser());
+
 if (env.NODE_ENV !== "prod") {
   app.use(
     cors({
       // Reflect the caller's origin rather than sending "*". The tRPC client
       // sends credentials, and the CORS spec rejects a wildcard origin on any
       // credentialed request — the browser drops the response and fetch fails.
-      origin: true,
+      origin: "http://localhost:3000",
       credentials: true,
     }),
   );

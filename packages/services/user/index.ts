@@ -1,11 +1,15 @@
 import { randomBytes, createHmac } from "node:crypto";
+import * as JWT from "jsonwebtoken";
 import { db, eq } from "@repo/database";
 import { usersTable } from "@repo/database/models/user";
 
 import {
   type CreateUserWithEmailAndPasswordInputType,
+  GenerateUserTokenPayloadType,
   createUserWithEmailAndPasswordInput,
+  generateUserTokenPayload,
 } from "./model";
+import { env } from "../env";
 
 class UserService {
   public async getUserByEmail(email: string) {
@@ -14,10 +18,15 @@ class UserService {
     return result[0];
   }
 
+  //token
+  private async generateUserToken(payload: GenerateUserTokenPayloadType) {
+    const { id } = await generateUserTokenPayload.parseAsync(payload);
+    const token = JWT.sign({ id }, env.JWT_SECRET);
+    console.log(token);
+    return { token }; //openclose design principle (using object so i can extend it later not direclty passing token)
+  }
+
   public async createUserWithEmailAndPassword(payload: CreateUserWithEmailAndPasswordInputType) {
-    //bussiness logic
-    //sabse pehle parsing krlete hain
-    //if validation success il get email password
     const { fullName, email, password } =
       await createUserWithEmailAndPasswordInput.parseAsync(payload);
 
@@ -41,13 +50,16 @@ class UserService {
         id: usersTable.id,
       });
 
-    // const createdUser = userInsertResult[0];
-    //if (!createdUser) throw new Error(`something went wrong while creating a user`);
-
     if (!userInsertResult || userInsertResult.length === 0 || !userInsertResult[0]?.id)
       throw new Error(`something went wrong while creating a user`);
+
+    const userId = userInsertResult[0].id;
+
+    const { token } = await this.generateUserToken({ id: userId });
+
     return {
-      id: userInsertResult[0].id,
+      id: userId,
+      token,
     };
   }
 }
