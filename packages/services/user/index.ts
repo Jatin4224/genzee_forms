@@ -8,6 +8,8 @@ import {
   GenerateUserTokenPayloadType,
   createUserWithEmailAndPasswordInput,
   generateUserTokenPayload,
+  signInUserWithEmailAndPasswordInput,
+  signInUserWithEmailAndPasswordInputType,
 } from "./model";
 import { env } from "../env";
 
@@ -22,8 +24,12 @@ class UserService {
   private async generateUserToken(payload: GenerateUserTokenPayloadType) {
     const { id } = await generateUserTokenPayload.parseAsync(payload);
     const token = JWT.sign({ id }, env.JWT_SECRET);
-    console.log(token);
+
     return { token }; //openclose design principle (using object so i can extend it later not direclty passing token)
+  }
+
+  private async generateHash(salt: string, password: string) {
+    return createHmac("sha256", salt).update(password).digest("hex");
   }
 
   public async createUserWithEmailAndPassword(payload: CreateUserWithEmailAndPasswordInputType) {
@@ -35,7 +41,7 @@ class UserService {
     if (existingUserWithEmail) throw new Error(`user with email ${email} already exists`);
 
     const salt = randomBytes(16).toString("hex");
-    const hash = createHmac("sha256", salt).update(password).digest("hex");
+    const hash = await this.generateHash(salt, password);
 
     // Create the user in the db
     const userInsertResult = await db
@@ -59,6 +65,29 @@ class UserService {
 
     return {
       id: userId,
+      token,
+    };
+  }
+
+  //login
+  public async signinUserWithEmailAndPassword(payload: signInUserWithEmailAndPasswordInputType) {
+    const { email, password } = await signInUserWithEmailAndPasswordInput.parseAsync(payload);
+
+    const existingUser = await this.getUserByEmail(email);
+    if (!existingUser) throw new Error(`User with email ${email} does not exist`);
+
+    // what if user ka mail h kyuki usne google se login kra h par pass ya salt nahi h
+    if (!existingUser.password || !existingUser.salt)
+      throw new Error(`Invalid authentication method`);
+
+    const hash = await this.generateHash(existingUser.salt, password);
+
+    if (hash !== existingUser.password) throw new Error(`Invalid email address or password`);
+
+    const { token } = await this.generateUserToken({ id: existingUser.id });
+
+    return {
+      id: existingUser.id,
       token,
     };
   }
