@@ -91,6 +91,8 @@ class UserService {
       token,
     };
   }
+
+  public async verifyAndDecodeUserToken(token: string) {}
 }
 
 export default UserService;
