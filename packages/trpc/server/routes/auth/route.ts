@@ -4,10 +4,12 @@ import { generatePath } from "../../utils/path-generator";
 import {
   createUserWithEmailAndPasswordInputModel,
   createUserWithEmailAndPasswordOutputModel,
+  getLoggedInUserInfoInputModel,
+  getLoggedInUserInfoOutputModel,
   SignInUserWithEmailAndPasswordInputModel,
   SignInUserWithEmailAndPasswordOutputModel,
 } from "./model";
-import { setAuthenticationCookie } from "../../utils/cookie";
+import { getAuthenticationCookie, setAuthenticationCookie } from "../../utils/cookie";
 import { signInUserWithEmailAndPasswordInput } from "@repo/services/user/model";
 
 const TAGS = ["Authentication"];
@@ -60,6 +62,31 @@ export const authRouter = router({
       setAuthenticationCookie(ctx, token);
       return {
         id,
+      };
+    }),
+
+  getLoggedInUserInfo: publicProcedure
+    .meta({
+      openapi: {
+        method: "POST",
+        path: getPath("/getLoggedInUserInfo"),
+        tags: TAGS,
+      },
+    })
+    .input(getLoggedInUserInfoInputModel)
+    .output(getLoggedInUserInfoOutputModel)
+    .query(async ({ ctx }) => {
+      const userToken = getAuthenticationCookie(ctx);
+      if (!userToken) return null;
+
+      const { id, email, fullName, profileImageUrl } =
+        await userService.verifyAndDecodeUserToken(userToken);
+
+      return {
+        id,
+        email,
+        fullName,
+        profileImageUrl,
       };
     }),
 });

@@ -47,10 +47,10 @@ export function setAuthenticationCookie(ctx: TRPCContext, accessToken: string) {
   ctx.createCookie(AUTHENTICATION_COOKIE_NAME, accessToken);
 }
 
-export function getAuthenticationCookie(ctx: TRPCContext, accessToken: string) {
+export function getAuthenticationCookie(ctx: TRPCContext) {
   return ctx.getCookie(AUTHENTICATION_COOKIE_NAME);
 }
 
-export function clearAuthenticationCookie(ctx: TRPCContext, accessToken: string) {
+export function clearAuthenticationCookie(ctx: TRPCContext) {
   ctx.clearCookie(AUTHENTICATION_COOKIE_NAME);
 }

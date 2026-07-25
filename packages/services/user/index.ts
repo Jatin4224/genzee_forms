@@ -14,12 +14,6 @@ import {
 import { env } from "../env";
 
 class UserService {
-  public async getUserByEmail(email: string) {
-    const result = await db.select().from(usersTable).where(eq(usersTable.email, email));
-    if (!result || result.length === 0) return null;
-    return result[0];
-  }
-
   //token
   private async generateUserToken(payload: GenerateUserTokenPayloadType) {
     const { id } = await generateUserTokenPayload.parseAsync(payload);
@@ -30,6 +24,37 @@ class UserService {
 
   private async generateHash(salt: string, password: string) {
     return createHmac("sha256", salt).update(password).digest("hex");
+  }
+
+  private async getUserByEmail(email: string) {
+    const result = await db.select().from(usersTable).where(eq(usersTable.email, email));
+    if (!result || result.length === 0) return null;
+    return result[0];
+  }
+
+  private async verifyUserToken(token: string): Promise<GenerateUserTokenPayloadType> {
+    try {
+      const verificationResult = JWT.verify(token, env.JWT_SECRET) as GenerateUserTokenPayloadType; //typecast
+      return verificationResult;
+    } catch (error) {
+      throw new Error(`Invalid token`);
+    }
+  }
+
+  private async getUserInfoById(id: string) {
+    const user = await db
+      .select({
+        id: usersTable.id,
+        email: usersTable.email,
+        fullName: usersTable.fullName,
+        profileImageUrl: usersTable.profileImageUrl,
+      })
+      .from(usersTable)
+      .where(eq(usersTable.id, id));
+
+    const userInfo = user[0];
+    if (!userInfo) throw new Error(`User with ID ${id} does not exists`);
+    return userInfo;
   }
 
   public async createUserWithEmailAndPassword(payload: CreateUserWithEmailAndPasswordInputType) {
@@ -92,7 +117,10 @@ class UserService {
     };
   }
 
-  public async verifyAndDecodeUserToken(token: string) {}
+  public async verifyAndDecodeUserToken(token: string) {
+    const { id } = await this.verifyUserToken(token);
+    return this.getUserInfoById(id);
+  }
 }
 
 export default UserService;

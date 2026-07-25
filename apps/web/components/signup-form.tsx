@@ -2,7 +2,7 @@
 
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-
+import { useRouter } from "next/navigation";
 import { cn } from "~/lib/utils";
 import { Button } from "~/components/ui/button";
 import {
@@ -26,6 +26,7 @@ export interface SignupFormValues {
 
 export function SignupForm({ className, ...props }: React.ComponentProps<"form">) {
   const { createUserWithEmailAndPasswordAsync, status } = useSignup();
+  const router = useRouter();
 
   const {
     register,
@@ -53,6 +54,7 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"form">
       });
       toast.success("Account created");
       reset();
+      router.replace("/dashboard");
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Could not create your account");
     }

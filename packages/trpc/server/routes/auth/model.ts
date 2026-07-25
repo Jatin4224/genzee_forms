@@ -18,3 +18,15 @@ export const SignInUserWithEmailAndPasswordInputModel = z.object({
 export const SignInUserWithEmailAndPasswordOutputModel = z.object({
   id: z.string().describe("id of the user created"),
 });
+
+//m frontend par token nahi bolna chata m kyu btau m frontend use krra hun
+export const getLoggedInUserInfoInputModel = z.undefined(); //humko koi bhi input nahi chahiye cookie khud aajati h
+
+export const getLoggedInUserInfoOutputModel = z
+  .object({
+    id: z.string().describe("id of the user created"),
+    email: z.email().describe("email of the user"),
+    fullName: z.string().describe("name of the user"),
+    profileImageUrl: z.string().describe("image of the user").optional().nullable(),
+  })
+  .nullable();
