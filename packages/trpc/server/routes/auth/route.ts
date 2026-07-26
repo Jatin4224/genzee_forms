@@ -47,6 +47,7 @@ export const authRouter = router({
         method: "POST",
         path: getPath("/signInUserWithEmailAndPassword"),
         tags: TAGS,
+        protect: true,
       },
     })
     .input(SignInUserWithEmailAndPasswordInputModel)
