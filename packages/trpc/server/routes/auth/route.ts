@@ -1,4 +1,4 @@
-import { publicProcedure, router } from "../../trpc";
+import { authenticatedProcedure, publicProcedure, router } from "../../trpc";
 import { userService } from "../../services";
 import { generatePath } from "../../utils/path-generator";
 import {
@@ -65,7 +65,7 @@ export const authRouter = router({
       };
     }),
 
-  getLoggedInUserInfo: publicProcedure
+  getLoggedInUserInfo: authenticatedProcedure
     .meta({
       openapi: {
         method: "POST",
@@ -76,11 +76,13 @@ export const authRouter = router({
     .input(getLoggedInUserInfoInputModel)
     .output(getLoggedInUserInfoOutputModel)
     .query(async ({ ctx }) => {
-      const userToken = getAuthenticationCookie(ctx);
-      if (!userToken) return null;
+      //yh sb hatadunga kyuki m sure hun ctx m user info hoga hi hoga or vo authenticareProcedure ko paar karek idhar aaya heto vo authenticated hehi h.
+      // const userToken = getAuthenticationCookie(ctx);
+      // if (!userToken) return null;
 
-      const { id, email, fullName, profileImageUrl } =
-        await userService.verifyAndDecodeUserToken(userToken);
+      const { id, email, fullName, profileImageUrl } = await userService.getUserInfoById(
+        ctx.user.id,
+      );
 
       return {
         id,
