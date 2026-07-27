@@ -1,4 +1,5 @@
 import { CreateFormDialog } from "~/components/create-form-dialog";
+import { FormsTable } from "~/components/forms-table";
 
 export default function FormsPage() {
   return (
@@ -11,6 +12,9 @@ export default function FormsPage() {
               <p className="text-muted-foreground">Manage your forms here.</p>
             </div>
             <CreateFormDialog />
+          </div>
+          <div className="px-4 lg:px-6">
+            <FormsTable />
           </div>
         </div>
       </div>
