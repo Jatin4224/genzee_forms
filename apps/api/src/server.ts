@@ -18,19 +18,22 @@ const openApiDocument = generateOpenApiDocument(serverRouter, {
   baseUrl: env.BASE_URL.concat("/api"),
 });
 
+// behind Railway/Vercel the app sits behind a TLS-terminating proxy; trust it so
+// req.secure and secure cookies behave correctly in production.
+app.set("trust proxy", 1);
+
 app.use(cookieParser());
 
-if (env.NODE_ENV !== "prod") {
-  app.use(
-    cors({
-      // Reflect the caller's origin rather than sending "*". The tRPC client
-      // sends credentials, and the CORS spec rejects a wildcard origin on any
-      // credentialed request — the browser drops the response and fetch fails.
-      origin: "http://localhost:3000",
-      credentials: true,
-    }),
-  );
-}
+app.use(
+  cors({
+    // The web app and API are on different domains in production, so CORS must
+    // run in every environment. The tRPC client sends credentials, and the CORS
+    // spec forbids a wildcard origin on credentialed requests — so we send the
+    // exact web origin (localhost in dev, the Vercel URL in prod via WEB_ORIGIN).
+    origin: env.WEB_ORIGIN,
+    credentials: true,
+  }),
+);
 
 app.use(express.json());
 

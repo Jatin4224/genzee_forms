@@ -9,11 +9,16 @@ const ONE_DAY = 24 * ONE_HOUR;
 const ONE_MONTH = 30 * ONE_DAY;
 const ONE_YEAR = 12 * ONE_MONTH;
 
+//in production the web and API are on different domains, so the auth cookie is
+//cross-site: browsers only send it when sameSite is "none" AND secure is true.
+//in development we keep the stricter localhost-friendly settings.
+const isProd = (process.env.NODE_ENV as string) === "prod";
+
 const defaultCookieOptions: CookieOptions = {
   path: "/",
   httpOnly: true,
-  secure: false,
-  sameSite: "strict",
+  secure: isProd,
+  sameSite: isProd ? "none" : "strict",
   maxAge: ONE_YEAR,
 };
 
