@@ -108,10 +108,10 @@ class FormService {
       .orderBy(asc(formFieldsTable.index)); //fractional index keeps fields in order
 
     const firstRow = rows[0];
-    if (!firstRow) throw new Error(`Form with ID ${formId} does not exist`);
 
-    //public endpoint: only published forms are visible
-    if (!firstRow.form.isPublished) throw new Error(`Form with ID ${formId} is not available`);
+    //public endpoint: return null for a missing OR unpublished form so the route
+    //can surface a clean NOT_FOUND instead of a 500.
+    if (!firstRow || !firstRow.form.isPublished) return null;
 
     //field is null on the single row a fields-less form produces, so filter those out
     const fields = rows
@@ -124,6 +124,28 @@ class FormService {
       ...publicForm,
       fields,
     };
+  }
+
+  //owner-facing: the form's metadata regardless of publish state (for the builder)
+  public async getFormMeta(payload: GetFormByIdInputType, userId: string) {
+    const { formId } = await getFormByIdInput.parseAsync(payload);
+
+    await this.assertFormOwned(formId, userId);
+
+    const rows = await db
+      .select({
+        id: formsTable.id,
+        title: formsTable.title,
+        description: formsTable.description,
+        isPublished: formsTable.isPublished,
+      })
+      .from(formsTable)
+      .where(eq(formsTable.id, formId));
+
+    const form = rows[0];
+    if (!form) throw new Error(`Form not found or you do not have access to it`);
+
+    return form;
   }
 
   public async updateForm(payload: UpdateFormInputType, userId: string) {

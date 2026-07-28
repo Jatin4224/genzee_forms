@@ -5,7 +5,13 @@ import { IconCheck, IconShare } from "@tabler/icons-react";
 
 import { Button } from "~/components/ui/button";
 
-export function ShareFormButton({ formId }: { formId: string }) {
+export function ShareFormButton({
+  formId,
+  disabled,
+}: {
+  formId: string;
+  disabled?: boolean;
+}) {
   const [copied, setCopied] = useState(false);
 
   const onShare = async () => {
@@ -16,7 +22,12 @@ export function ShareFormButton({ formId }: { formId: string }) {
   };
 
   return (
-    <Button variant="outline" onClick={onShare}>
+    <Button
+      variant="outline"
+      onClick={onShare}
+      disabled={disabled}
+      title={disabled ? "Publish the form to share it" : undefined}
+    >
       {copied ? <IconCheck /> : <IconShare />}
       {copied ? "Link copied" : "Share"}
     </Button>

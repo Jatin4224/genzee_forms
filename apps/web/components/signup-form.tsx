@@ -1,7 +1,6 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { cn } from "~/lib/utils";
 import { Button } from "~/components/ui/button";
@@ -46,18 +45,15 @@ export function SignupForm({ className, ...props }: React.ComponentProps<"form">
   const isSubmitting = status === "pending"; // CHANGED: added
 
   async function onSubmit(values: SignupFormValues) {
-    try {
-      await createUserWithEmailAndPasswordAsync({
-        email: values.email,
-        fullName: values.fullName,
-        password: values.password,
-      });
-      toast.success("Account created");
-      reset();
-      router.replace("/dashboard");
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Could not create your account");
-    }
+    //success/error toasts are handled by the useSignup hook. On failure the await
+    //rejects and react-hook-form swallows it, so we simply don't navigate.
+    await createUserWithEmailAndPasswordAsync({
+      email: values.email,
+      fullName: values.fullName,
+      password: values.password,
+    });
+    reset();
+    router.replace("/dashboard");
   }
 
   return (

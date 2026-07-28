@@ -17,11 +17,14 @@ type LoginFormValues = {
 export function LoginForm({ className, ...props }: React.ComponentProps<"div">) {
   const { signInUserWithEmailAndPasswordAsync } = useSignin();
   const router = useRouter();
-  const { register, handleSubmit } = useForm<LoginFormValues>();
+  const {
+    register,
+    handleSubmit,
+    formState: { isSubmitting },
+  } = useForm<LoginFormValues>();
 
   const onSubmit = async (values: LoginFormValues) => {
-    console.log(values);
-    const { id } = await signInUserWithEmailAndPasswordAsync({
+    await signInUserWithEmailAndPasswordAsync({
       email: values.email,
       password: values.password,
     });
@@ -61,7 +64,9 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
                 <Input id="password" type="password" required {...register("password")} />
               </Field>
               <Field>
-                <Button type="submit">Login</Button>
+                <Button type="submit" disabled={isSubmitting}>
+                  {isSubmitting ? "Signing in..." : "Login"}
+                </Button>
                 <Button variant="outline" type="button">
                   Login with Google
                 </Button>

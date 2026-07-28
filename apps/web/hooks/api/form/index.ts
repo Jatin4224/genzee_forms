@@ -1,3 +1,5 @@
+import { toast } from "sonner";
+
 import { trpc } from "~/trpc/client";
 
 export const useCreateForm = () => {
@@ -14,8 +16,12 @@ export const useCreateForm = () => {
     status,
   } = trpc.form.createForm.useMutation({
     onSuccess: async () => {
+      toast.success("Form created");
       //refetch the list so the newly created form shows up
       await utils.form.listForms.invalidate();
+    },
+    onError: (error) => {
+      toast.error(error.message ?? "Could not create form");
     },
   });
 
@@ -65,6 +71,9 @@ export const useUpdateForm = () => {
     onSuccess: async () => {
       await utils.form.listForms.invalidate();
     },
+    onError: (error) => {
+      toast.error(error.message ?? "Could not update form");
+    },
   });
 
   return {
@@ -89,7 +98,11 @@ export const useDeleteForm = () => {
     status,
   } = trpc.form.deleteForm.useMutation({
     onSuccess: async () => {
+      toast.success("Form deleted");
       await utils.form.listForms.invalidate();
+    },
+    onError: (error) => {
+      toast.error(error.message ?? "Could not delete form");
     },
   });
 
@@ -99,6 +112,22 @@ export const useDeleteForm = () => {
     error,
     isError,
     isSuccess,
+    status,
+  };
+};
+
+export const useGetFormMeta = (formId: string) => {
+  const {
+    data: form,
+    error,
+    isLoading,
+    status,
+  } = trpc.form.getFormMeta.useQuery({ formId });
+
+  return {
+    form,
+    error,
+    isLoading,
     status,
   };
 };

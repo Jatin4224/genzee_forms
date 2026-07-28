@@ -23,7 +23,12 @@ export function PublicForm({ formId }: { formId: string }) {
   const { form, isLoading, error } = useGetForm(formId);
   const { submitFormAsync, isSuccess } = useSubmitForm();
 
-  const { register, control, handleSubmit } = useForm<Record<string, unknown>>();
+  const {
+    register,
+    control,
+    handleSubmit,
+    formState: { isSubmitting },
+  } = useForm<Record<string, unknown>>();
 
   const onSubmit = async (values: Record<string, unknown>) => {
     if (!form) return;
@@ -115,7 +120,9 @@ export function PublicForm({ formId }: { formId: string }) {
               ),
             )}
 
-            <Button type="submit">Submit</Button>
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? "Submitting..." : "Submit"}
+            </Button>
           </form>
         </CardContent>
       </Card>

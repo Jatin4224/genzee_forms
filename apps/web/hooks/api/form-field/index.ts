@@ -1,3 +1,5 @@
+import { toast } from "sonner";
+
 import { trpc } from "~/trpc/client";
 
 export const useGetFields = (formId: string) => {
@@ -34,8 +36,12 @@ export const useCreateField = () => {
     status,
   } = trpc.formField.createField.useMutation({
     onSuccess: async () => {
+      toast.success("Field added");
       //refetch the fields so the new one shows up
       await utils.formField.getFields.invalidate();
+    },
+    onError: (error) => {
+      toast.error(error.message ?? "Could not add field");
     },
   });
 
@@ -67,6 +73,9 @@ export const useUpdateField = () => {
     onSuccess: async () => {
       await utils.formField.getFields.invalidate();
     },
+    onError: (error) => {
+      toast.error(error.message ?? "Could not update field");
+    },
   });
 
   return {
@@ -95,7 +104,11 @@ export const useDeleteField = () => {
     status,
   } = trpc.formField.deleteField.useMutation({
     onSuccess: async () => {
+      toast.success("Field deleted");
       await utils.formField.getFields.invalidate();
+    },
+    onError: (error) => {
+      toast.error(error.message ?? "Could not delete field");
     },
   });
 

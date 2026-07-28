@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { TRPCError } from "@trpc/server";
 
 import { authenticatedProcedure, publicProcedure, router } from "../../trpc";
 import { formService } from "../../services";
@@ -10,6 +11,7 @@ import {
   formIdOutputModel,
   getFormByIdInputModel,
   getFormByIdOutputModel,
+  getFormMetaOutputModel,
   listFormsOutputModel,
 } from "./model";
 
@@ -73,6 +75,27 @@ export const formRouter = router({
     .output(getFormByIdOutputModel)
     .query(async ({ input }) => {
       const form = await formService.getFormById({ formId: input.formId });
+
+      if (!form) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "This form could not be found" });
+      }
+
+      return form;
+    }),
+
+  getFormMeta: authenticatedProcedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: getPath("/getFormMeta"),
+        tags: TAGS,
+        protect: true,
+      },
+    })
+    .input(getFormByIdInputModel)
+    .output(getFormMetaOutputModel)
+    .query(async ({ input, ctx }) => {
+      const form = await formService.getFormMeta({ formId: input.formId }, ctx.user.id);
 
       return form;
     }),

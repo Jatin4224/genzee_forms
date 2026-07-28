@@ -1,3 +1,5 @@
+import { toast } from "sonner";
+
 import { trpc } from "~/trpc/client";
 
 export const useSubmitForm = () => {
@@ -10,7 +12,11 @@ export const useSubmitForm = () => {
     isIdle,
     isSuccess,
     status,
-  } = trpc.formSubmission.submitForm.useMutation();
+  } = trpc.formSubmission.submitForm.useMutation({
+    onError: (error) => {
+      toast.error(error.message ?? "Could not submit the form");
+    },
+  });
 
   return {
     submitFormAsync,

@@ -6,10 +6,12 @@ import {
   createUserWithEmailAndPasswordOutputModel,
   getLoggedInUserInfoInputModel,
   getLoggedInUserInfoOutputModel,
+  logoutInputModel,
+  logoutOutputModel,
   SignInUserWithEmailAndPasswordInputModel,
   SignInUserWithEmailAndPasswordOutputModel,
 } from "./model";
-import { getAuthenticationCookie, setAuthenticationCookie } from "../../utils/cookie";
+import { clearAuthenticationCookie, setAuthenticationCookie } from "../../utils/cookie";
 import { signInUserWithEmailAndPasswordInput } from "@repo/services/user/model";
 
 const TAGS = ["Authentication"];
@@ -90,6 +92,25 @@ export const authRouter = router({
         email,
         fullName,
         profileImageUrl,
+      };
+    }),
+
+  logout: authenticatedProcedure
+    .meta({
+      openapi: {
+        method: "POST",
+        path: getPath("/logout"),
+        tags: TAGS,
+        protect: true,
+      },
+    })
+    .input(logoutInputModel)
+    .output(logoutOutputModel)
+    .mutation(async ({ ctx }) => {
+      clearAuthenticationCookie(ctx);
+
+      return {
+        success: true,
       };
     }),
 });

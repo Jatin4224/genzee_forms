@@ -30,3 +30,9 @@ export const getLoggedInUserInfoOutputModel = z
     profileImageUrl: z.string().describe("image of the user").optional().nullable(),
   })
   .nullable();
+
+export const logoutInputModel = z.undefined();
+
+export const logoutOutputModel = z.object({
+  success: z.boolean().describe("whether the user was logged out"),
+});
