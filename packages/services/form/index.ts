@@ -1,7 +1,7 @@
 import { db, desc, eq } from "@repo/database";
 import { formsTable } from "@repo/database/models/form";
-import { formFieldsTable } from "@repo/database/models/form-field";
 
+import FormFieldService from "../form-field";
 import {
   type CreateFormInputType,
   type ListFormsByUserIdInputType,
@@ -10,6 +10,8 @@ import {
 } from "./model";
 
 class FormService {
+  private formFieldService = new FormFieldService();
+
   public async createForm(payload: CreateFormInputType) {
     const { title, description, createdBy, fields } = await createFormInput.parseAsync(payload);
 
@@ -29,20 +31,8 @@ class FormService {
       const createdForm = formInsertResult[0];
       if (!createdForm) throw new Error(`something went wrong while creating a form`);
 
-      if (fields.length > 0) {
-        await tx.insert(formFieldsTable).values(
-          fields.map((field) => ({
-            formId: createdForm.id,
-            label: field.label,
-            labelKey: field.labelKey,
-            description: field.description,
-            placeholder: field.placeholder,
-            isRequired: field.isRequired,
-            index: field.index.toString(), 
-            type: field.type,
-          })),
-        );
-      }
+      //field persistence is owned by the form-field service
+      await this.formFieldService.createFields(tx, createdForm.id, fields);
 
       return createdForm.id;
     });

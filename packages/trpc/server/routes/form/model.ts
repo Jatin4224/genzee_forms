@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { createFormFieldInput } from "@repo/services/form/model";
+import { createFormFieldInput } from "@repo/services/form-field/model";
 
 //createdBy is NOT taken from the client, it comes from ctx.user.id
 export const createFormInputModel = z.object({
