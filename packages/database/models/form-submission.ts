@@ -19,21 +19,15 @@ export interface FormSubmissionValue {
   value: string;
 }
 
+export type FormSubmissionValueRow = FormSubmissionValue[];
 
-export type FormSubmissionValueRow = FormSubmissionValue[],
-
-//this is how we are storing 
-// const row :FormSubmissionValueRow = [
-//     {formFieldId:'email',value:"jatin@gmail"},
-//     {formFieldId:'',value:''}
-// ]
 export const formSubmissionTable = pgTable("forms_submissions", {
   id: uuid("id").primaryKey().defaultRandom(),
 
   formId: uuid("form_id").references(() => formsTable.id),
-  
-  values:json('values').$type<FormSubmissionValueRow>(), //infer karre h .$type<FormSubmissionValueRow>(),
-  
+
+  values: json("values").$type<FormSubmissionValueRow>(), //infer karre h .$type<FormSubmissionValueRow>(),
+
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").$onUpdate(() => new Date()),
 });

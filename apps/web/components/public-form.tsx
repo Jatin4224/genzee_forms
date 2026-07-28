@@ -3,6 +3,7 @@
 import { Controller, useForm } from "react-hook-form";
 
 import { useGetForm } from "~/hooks/api/form";
+import { useSubmitForm } from "~/hooks/api/form-submission";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
 import { Checkbox } from "~/components/ui/checkbox";
@@ -20,12 +21,23 @@ const INPUT_TYPE: Record<string, string> = {
 
 export function PublicForm({ formId }: { formId: string }) {
   const { form, isLoading, error } = useGetForm(formId);
+  const { submitFormAsync, isSuccess } = useSubmitForm();
 
   const { register, control, handleSubmit } = useForm<Record<string, unknown>>();
 
-  const onSubmit = (values: Record<string, unknown>) => {
-    //no submission endpoint yet, so just log the collected answers keyed by labelKey
-    console.log("form answers", values);
+  const onSubmit = async (values: Record<string, unknown>) => {
+    if (!form) return;
+
+    //the form collects answers keyed by labelKey; the submission stores them keyed by field id
+    const submissionValues = form.fields.map((field) => {
+      const answer = values[field.labelKey];
+      return {
+        formFieldId: field.id,
+        value: answer === undefined || answer === null ? "" : String(answer),
+      };
+    });
+
+    await submitFormAsync({ formId, values: submissionValues });
   };
 
   if (isLoading) {
@@ -41,6 +53,19 @@ export function PublicForm({ formId }: { formId: string }) {
     return (
       <div className="mx-auto max-w-xl p-6 text-center text-muted-foreground">
         This form could not be found.
+      </div>
+    );
+  }
+
+  if (isSuccess) {
+    return (
+      <div className="mx-auto w-full max-w-xl p-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>Thanks for your response!</CardTitle>
+            <CardDescription>Your submission has been recorded.</CardDescription>
+          </CardHeader>
+        </Card>
       </div>
     );
   }
