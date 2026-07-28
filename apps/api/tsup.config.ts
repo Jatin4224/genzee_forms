@@ -2,7 +2,8 @@ import { defineConfig } from "tsup";
 
 export default defineConfig({
   entry: ["./src/index.ts"],
-  noExternal: [/^@repo\//], // bundle the internal workspace packages (@repo/*) into the output
+  // bundle internal workspace packages, plus @scalar (ESM-only) so it works in the CJS output
+  noExternal: [/^@repo\//, "@scalar/express-api-reference"],
   splitting: false,
   bundle: true,
   outDir: "./dist",
