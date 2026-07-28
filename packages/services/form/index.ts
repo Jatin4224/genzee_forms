@@ -1,11 +1,14 @@
-import { db, desc, eq } from "@repo/database";
+import { asc, db, desc, eq } from "@repo/database";
 import { formsTable } from "@repo/database/models/form";
+import { formFieldsTable } from "@repo/database/models/form-field";
 
 import FormFieldService from "../form-field";
 import {
   type CreateFormInputType,
+  type GetFormByIdInputType,
   type ListFormsByUserIdInputType,
   createFormInput,
+  getFormByIdInput,
   listFormsByUserIdInput,
 } from "./model";
 
@@ -58,6 +61,48 @@ class FormService {
       .orderBy(desc(formsTable.createdAt));
 
     return forms;
+  }
+
+  //public: safe to share, returns only the form's public columns and its fields.
+  //a single left join fetches the form and all its fields so the form can be rendered at once
+  public async getFormById(payload: GetFormByIdInputType) {
+    const { formId } = await getFormByIdInput.parseAsync(payload);
+
+    const rows = await db
+      .select({
+        form: {
+          id: formsTable.id,
+          title: formsTable.title,
+          description: formsTable.description,
+        },
+        field: {
+          id: formFieldsTable.id,
+          label: formFieldsTable.label,
+          labelKey: formFieldsTable.labelKey,
+          description: formFieldsTable.description,
+          placeholder: formFieldsTable.placeholder,
+          isRequired: formFieldsTable.isRequired,
+          index: formFieldsTable.index,
+          type: formFieldsTable.type,
+        },
+      })
+      .from(formsTable)
+      .leftJoin(formFieldsTable, eq(formFieldsTable.formId, formsTable.id))
+      .where(eq(formsTable.id, formId))
+      .orderBy(asc(formFieldsTable.index)); //fractional index keeps fields in order
+
+    const firstRow = rows[0];
+    if (!firstRow) throw new Error(`Form with ID ${formId} does not exist`);
+
+    //field is null on the single row a fields-less form produces, so filter those out
+    const fields = rows
+      .map((row) => row.field)
+      .filter((field): field is NonNullable<typeof field> => field !== null);
+
+    return {
+      ...firstRow.form,
+      fields,
+    };
   }
 }
 

@@ -1,9 +1,15 @@
 import { z } from "zod";
 
-import { authenticatedProcedure, router } from "../../trpc";
+import { authenticatedProcedure, publicProcedure, router } from "../../trpc";
 import { formService } from "../../services";
 import { generatePath } from "../../utils/path-generator";
-import { createFormInputModel, createFormOutputModel, listFormsOutputModel } from "./model";
+import {
+  createFormInputModel,
+  createFormOutputModel,
+  getFormByIdInputModel,
+  getFormByIdOutputModel,
+  listFormsOutputModel,
+} from "./model";
 
 const TAGS = ["Form"];
 const getPath = generatePath("/form");
@@ -50,5 +56,22 @@ export const formRouter = router({
       const forms = await formService.listFormsByUserId({ userId: ctx.user.id });
 
       return forms;
+    }),
+
+  //public: no auth, so a form can be shared and filled by anyone with the link
+  getForm: publicProcedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: getPath("/getForm"),
+        tags: TAGS,
+      },
+    })
+    .input(getFormByIdInputModel)
+    .output(getFormByIdOutputModel)
+    .query(async ({ input }) => {
+      const form = await formService.getFormById({ formId: input.formId });
+
+      return form;
     }),
 });

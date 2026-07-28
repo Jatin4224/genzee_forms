@@ -19,3 +19,9 @@ export const listFormsByUserIdInput = z.object({
 });
 
 export type ListFormsByUserIdInputType = z.infer<typeof listFormsByUserIdInput>;
+
+export const getFormByIdInput = z.object({
+  formId: z.string().describe("uuid of the form being fetched"),
+});
+
+export type GetFormByIdInputType = z.infer<typeof getFormByIdInput>;
