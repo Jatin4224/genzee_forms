@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { Button } from "~/components/ui/button";
+import { FormBuilder } from "~/components/form-builder";
 
 export default async function FormBuilderPage({
   params,
@@ -23,9 +24,7 @@ export default async function FormBuilderPage({
             </Button>
           </div>
           <div className="px-4 lg:px-6">
-            <div className="rounded-lg border border-dashed p-10 text-center text-muted-foreground">
-              Builder coming soon. This is where you&apos;ll edit the fields of form {id}.
-            </div>
+            <FormBuilder formId={id} />
           </div>
         </div>
       </div>
