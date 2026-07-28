@@ -1,19 +1,33 @@
-import { asc, db, desc, eq } from "@repo/database";
+import { and, asc, db, desc, eq } from "@repo/database";
 import { formsTable } from "@repo/database/models/form";
 import { formFieldsTable } from "@repo/database/models/form-field";
 
 import FormFieldService from "../form-field";
 import {
   type CreateFormInputType,
+  type DeleteFormInputType,
   type GetFormByIdInputType,
   type ListFormsByUserIdInputType,
+  type UpdateFormInputType,
   createFormInput,
+  deleteFormInput,
   getFormByIdInput,
   listFormsByUserIdInput,
+  updateFormInput,
 } from "./model";
 
 class FormService {
   private formFieldService = new FormFieldService();
+
+  //throws unless the given form belongs to the given user
+  private async assertFormOwned(formId: string, userId: string) {
+    const owned = await db
+      .select({ id: formsTable.id })
+      .from(formsTable)
+      .where(and(eq(formsTable.id, formId), eq(formsTable.createdBy, userId)));
+
+    if (!owned[0]) throw new Error(`Form not found or you do not have access to it`);
+  }
 
   public async createForm(payload: CreateFormInputType) {
     const { title, description, createdBy, fields } = await createFormInput.parseAsync(payload);
@@ -53,6 +67,7 @@ class FormService {
         id: formsTable.id,
         title: formsTable.title,
         description: formsTable.description,
+        isPublished: formsTable.isPublished,
         createdAt: formsTable.createdAt,
         updatedAt: formsTable.updatedAt,
       })
@@ -74,6 +89,7 @@ class FormService {
           id: formsTable.id,
           title: formsTable.title,
           description: formsTable.description,
+          isPublished: formsTable.isPublished,
         },
         field: {
           id: formFieldsTable.id,
@@ -94,14 +110,45 @@ class FormService {
     const firstRow = rows[0];
     if (!firstRow) throw new Error(`Form with ID ${formId} does not exist`);
 
+    //public endpoint: only published forms are visible
+    if (!firstRow.form.isPublished) throw new Error(`Form with ID ${formId} is not available`);
+
     //field is null on the single row a fields-less form produces, so filter those out
     const fields = rows
       .map((row) => row.field)
       .filter((field): field is NonNullable<typeof field> => field !== null);
 
+    const { isPublished: _isPublished, ...publicForm } = firstRow.form;
+
     return {
-      ...firstRow.form,
+      ...publicForm,
       fields,
+    };
+  }
+
+  public async updateForm(payload: UpdateFormInputType, userId: string) {
+    const { formId, ...rest } = await updateFormInput.parseAsync(payload);
+
+    await this.assertFormOwned(formId, userId);
+
+    await db.update(formsTable).set(rest).where(eq(formsTable.id, formId));
+
+    return {
+      id: formId,
+    };
+  }
+
+  public async deleteForm(payload: DeleteFormInputType, userId: string) {
+    const { formId } = await deleteFormInput.parseAsync(payload);
+
+    await this.assertFormOwned(formId, userId);
+
+    //form-fields cascade on delete; submissions do not, so remove the form's rows explicitly is
+    //not needed here because the submissions FK has no cascade — see note in form-submission model
+    await db.delete(formsTable).where(eq(formsTable.id, formId));
+
+    return {
+      id: formId,
     };
   }
 }

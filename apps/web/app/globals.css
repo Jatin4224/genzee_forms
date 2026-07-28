@@ -155,3 +155,43 @@
   --info-accent: oklch(0.72 0.16 258);
   --info-accent-foreground: oklch(0.16 0 0);
 }
+
+/*
+ * Shimmer text: the glyphs are painted with a moving gradient via
+ * background-clip:text. Only the text FILL is made transparent, so
+ * currentColor still resolves to the element's color and the base of the
+ * gradient adapts to any text color (light + dark).
+ */
+@keyframes shimmer {
+  from {
+    background-position: 150% 0;
+  }
+  to {
+    background-position: -50% 0;
+  }
+}
+
+.shimmer {
+  --shimmer-color: color-mix(in oklch, currentColor 35%, white);
+  background-image: linear-gradient(
+    110deg,
+    currentColor 0%,
+    currentColor 45%,
+    var(--shimmer-color) 50%,
+    currentColor 55%,
+    currentColor 100%
+  );
+  background-size: 200% 100%;
+  background-repeat: no-repeat;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 2s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shimmer {
+    animation: none;
+    -webkit-text-fill-color: currentColor;
+  }
+}

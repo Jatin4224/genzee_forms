@@ -25,3 +25,18 @@ export const getFormByIdInput = z.object({
 });
 
 export type GetFormByIdInputType = z.infer<typeof getFormByIdInput>;
+
+export const updateFormInput = z.object({
+  formId: z.string().describe("uuid of the form being updated"),
+  title: z.string().describe("title of the form").optional(),
+  description: z.string().describe("description of the form").nullable().optional(),
+  isPublished: z.boolean().describe("whether the form is publicly shareable").optional(),
+});
+
+export type UpdateFormInputType = z.infer<typeof updateFormInput>;
+
+export const deleteFormInput = z.object({
+  formId: z.string().describe("uuid of the form being deleted"),
+});
+
+export type DeleteFormInputType = z.infer<typeof deleteFormInput>;

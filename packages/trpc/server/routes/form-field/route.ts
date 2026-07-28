@@ -24,8 +24,8 @@ export const formFieldRouter = router({
     })
     .input(createFieldInput)
     .output(fieldIdOutputModel)
-    .mutation(async ({ input }) => {
-      const { id } = await formFieldService.createField(input);
+    .mutation(async ({ input, ctx }) => {
+      const { id } = await formFieldService.createField(input, ctx.user.id);
 
       return {
         id,
@@ -60,8 +60,8 @@ export const formFieldRouter = router({
     })
     .input(updateFieldInput)
     .output(fieldIdOutputModel)
-    .mutation(async ({ input }) => {
-      const { id } = await formFieldService.updateField(input);
+    .mutation(async ({ input, ctx }) => {
+      const { id } = await formFieldService.updateField(input, ctx.user.id);
 
       return {
         id,
@@ -79,8 +79,8 @@ export const formFieldRouter = router({
     })
     .input(deleteFieldInput)
     .output(fieldIdOutputModel)
-    .mutation(async ({ input }) => {
-      const { id } = await formFieldService.deleteField(input);
+    .mutation(async ({ input, ctx }) => {
+      const { id } = await formFieldService.deleteField(input, ctx.user.id);
 
       return {
         id,

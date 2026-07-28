@@ -2,6 +2,7 @@ import { and, db, desc, eq } from "@repo/database";
 import { formsTable } from "@repo/database/models/form";
 import { formSubmissionTable } from "@repo/database/models/form-submission";
 
+import FormFieldService from "../form-field";
 import {
   type CreateSubmissionInputType,
   type ListSubmissionsByFormIdInputType,
@@ -10,9 +11,31 @@ import {
 } from "./model";
 
 class FormSubmissionService {
+  private formFieldService = new FormFieldService();
+
   //public: anyone with the link can submit, so no ownership check here
   public async createSubmission(payload: CreateSubmissionInputType) {
     const { formId, values } = await createSubmissionInput.parseAsync(payload);
+
+    //validate the answers against the form's field definitions
+    const fields = await this.formFieldService.getFields({ formId });
+    const validFieldIds = new Set(fields.map((field) => field.id));
+    const answers = new Map(values.map((entry) => [entry.formFieldId, entry.value]));
+
+    for (const entry of values) {
+      if (!validFieldIds.has(entry.formFieldId)) {
+        throw new Error(`Answer references a field that does not belong to this form`);
+      }
+    }
+
+    for (const field of fields) {
+      if (field.isRequired) {
+        const answer = answers.get(field.id);
+        if (answer === undefined || answer.trim() === "") {
+          throw new Error(`Field "${field.label}" is required`);
+        }
+      }
+    }
 
     const result = await db
       .insert(formSubmissionTable)

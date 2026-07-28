@@ -20,7 +20,9 @@ export default function Home() {
 
   return (
     <main className="min-h-screen min-w-screen flex justify-center items-center">
-      <div>{JSON.stringify(user, null, 2)}</div>
+      <p className="shimmer text-muted-foreground text-lg font-medium">
+        Getting things ready&hellip;
+      </p>
     </main>
   );
 }

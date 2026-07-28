@@ -1,4 +1,5 @@
-import { asc, db, eq } from "@repo/database";
+import { and, asc, db, eq } from "@repo/database";
+import { formsTable } from "@repo/database/models/form";
 import { formFieldsTable } from "@repo/database/models/form-field";
 
 import {
@@ -17,6 +18,27 @@ import {
 type DbTransaction = Parameters<Parameters<typeof db.transaction>[0]>[0];
 
 class FormFieldService {
+  //throws unless the given form belongs to the given user
+  private async assertFormOwned(formId: string, userId: string) {
+    const owned = await db
+      .select({ id: formsTable.id })
+      .from(formsTable)
+      .where(and(eq(formsTable.id, formId), eq(formsTable.createdBy, userId)));
+
+    if (!owned[0]) throw new Error(`Form not found or you do not have access to it`);
+  }
+
+  //throws unless the field's parent form belongs to the given user
+  private async assertFieldOwned(fieldId: string, userId: string) {
+    const owned = await db
+      .select({ id: formFieldsTable.id })
+      .from(formFieldsTable)
+      .innerJoin(formsTable, eq(formFieldsTable.formId, formsTable.id))
+      .where(and(eq(formFieldsTable.id, fieldId), eq(formsTable.createdBy, userId)));
+
+    if (!owned[0]) throw new Error(`Field not found or you do not have access to it`);
+  }
+
   //bulk create used when a form is created with its initial fields (runs inside a transaction)
   public async createFields(
     tx: DbTransaction,
@@ -39,8 +61,10 @@ class FormFieldService {
     );
   }
 
-  public async createField(payload: CreateFieldInputType) {
+  public async createField(payload: CreateFieldInputType, userId: string) {
     const field = await createFieldInput.parseAsync(payload);
+
+    await this.assertFormOwned(field.formId, userId);
 
     const result = await db
       .insert(formFieldsTable)
@@ -87,9 +111,11 @@ class FormFieldService {
     return fields;
   }
 
-  public async updateField(payload: UpdateFieldInputType) {
+  public async updateField(payload: UpdateFieldInputType, userId: string) {
     //labelKey is not accepted here, so it can never change once set
     const { id, index, ...rest } = await updateFieldInput.parseAsync(payload);
+
+    await this.assertFieldOwned(id, userId);
 
     await db
       .update(formFieldsTable)
@@ -104,8 +130,10 @@ class FormFieldService {
     };
   }
 
-  public async deleteField(payload: DeleteFieldInputType) {
+  public async deleteField(payload: DeleteFieldInputType, userId: string) {
     const { id } = await deleteFieldInput.parseAsync(payload);
+
+    await this.assertFieldOwned(id, userId);
 
     await db.delete(formFieldsTable).where(eq(formFieldsTable.id, id));
 

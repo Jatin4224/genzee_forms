@@ -51,6 +51,58 @@ export const useListForms = () => {
   };
 };
 
+export const useUpdateForm = () => {
+  const utils = trpc.useUtils();
+
+  const {
+    mutateAsync: updateFormAsync,
+    mutate: updateForm,
+    error,
+    isError,
+    isSuccess,
+    status,
+  } = trpc.form.updateForm.useMutation({
+    onSuccess: async () => {
+      await utils.form.listForms.invalidate();
+    },
+  });
+
+  return {
+    updateFormAsync,
+    updateForm,
+    error,
+    isError,
+    isSuccess,
+    status,
+  };
+};
+
+export const useDeleteForm = () => {
+  const utils = trpc.useUtils();
+
+  const {
+    mutateAsync: deleteFormAsync,
+    mutate: deleteForm,
+    error,
+    isError,
+    isSuccess,
+    status,
+  } = trpc.form.deleteForm.useMutation({
+    onSuccess: async () => {
+      await utils.form.listForms.invalidate();
+    },
+  });
+
+  return {
+    deleteFormAsync,
+    deleteForm,
+    error,
+    isError,
+    isSuccess,
+    status,
+  };
+};
+
 export const useGetForm = (formId: string) => {
   const {
     data: form,

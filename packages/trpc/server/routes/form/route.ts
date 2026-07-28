@@ -3,9 +3,11 @@ import { z } from "zod";
 import { authenticatedProcedure, publicProcedure, router } from "../../trpc";
 import { formService } from "../../services";
 import { generatePath } from "../../utils/path-generator";
+import { deleteFormInput, updateFormInput } from "@repo/services/form/model";
 import {
   createFormInputModel,
   createFormOutputModel,
+  formIdOutputModel,
   getFormByIdInputModel,
   getFormByIdOutputModel,
   listFormsOutputModel,
@@ -73,5 +75,43 @@ export const formRouter = router({
       const form = await formService.getFormById({ formId: input.formId });
 
       return form;
+    }),
+
+  updateForm: authenticatedProcedure
+    .meta({
+      openapi: {
+        method: "POST",
+        path: getPath("/updateForm"),
+        tags: TAGS,
+        protect: true,
+      },
+    })
+    .input(updateFormInput)
+    .output(formIdOutputModel)
+    .mutation(async ({ input, ctx }) => {
+      const { id } = await formService.updateForm(input, ctx.user.id);
+
+      return {
+        id,
+      };
+    }),
+
+  deleteForm: authenticatedProcedure
+    .meta({
+      openapi: {
+        method: "POST",
+        path: getPath("/deleteForm"),
+        tags: TAGS,
+        protect: true,
+      },
+    })
+    .input(deleteFormInput)
+    .output(formIdOutputModel)
+    .mutation(async ({ input, ctx }) => {
+      const { id } = await formService.deleteForm(input, ctx.user.id);
+
+      return {
+        id,
+      };
     }),
 });

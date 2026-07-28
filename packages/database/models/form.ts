@@ -7,6 +7,9 @@ export const formsTable = pgTable("forms", {
   title: varchar("title", { length: 55 }).notNull(), //notNull - compulsary
   description: varchar("description", { length: 300 }),
 
+  //only published forms can be fetched through the public getForm procedure
+  isPublished: boolean("is_published").default(false).notNull(),
+
   createdBy: uuid("created_by").references(() => usersTable.id),
 
   createdAt: timestamp("created_at").defaultNow(),

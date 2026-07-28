@@ -1,9 +1,13 @@
 "use client";
 
 import Link from "next/link";
+import { IconPencil, IconTrash } from "@tabler/icons-react";
 
-import { useListForms } from "~/hooks/api/form";
+import { useDeleteForm, useListForms, useUpdateForm } from "~/hooks/api/form";
+import { Badge } from "~/components/ui/badge";
+import { Button } from "~/components/ui/button";
 import { Skeleton } from "~/components/ui/skeleton";
+import { Switch } from "~/components/ui/switch";
 import {
   Table,
   TableBody,
@@ -12,6 +16,7 @@ import {
   TableHeader,
   TableRow,
 } from "~/components/ui/table";
+import { EditFormDialog } from "~/components/edit-form-dialog";
 
 //timestamps arrive as ISO strings over the wire, so normalise before formatting
 function formatDate(value: string | Date | null) {
@@ -21,6 +26,8 @@ function formatDate(value: string | Date | null) {
 
 export function FormsTable() {
   const { forms, isLoading } = useListForms();
+  const { updateFormAsync } = useUpdateForm();
+  const { deleteFormAsync } = useDeleteForm();
 
   if (isLoading) {
     return (
@@ -41,28 +48,65 @@ export function FormsTable() {
   }
 
   return (
-    <div className="rounded-lg border">
+    <div className="overflow-x-auto rounded-lg border">
       <Table>
         <TableHeader>
           <TableRow>
             <TableHead>Title</TableHead>
             <TableHead>Description</TableHead>
             <TableHead>Created</TableHead>
+            <TableHead>Published</TableHead>
+            <TableHead className="text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {forms.map((form) => (
-            <TableRow key={form.id} className="cursor-pointer">
+            <TableRow key={form.id}>
               <TableCell className="font-medium">
                 <Link href={`/dashboard/forms/${form.id}`} className="hover:underline">
                   {form.title}
                 </Link>
               </TableCell>
-              <TableCell className="text-muted-foreground">
-                {form.description || "—"}
+              <TableCell className="text-muted-foreground">{form.description || "—"}</TableCell>
+              <TableCell className="text-muted-foreground">{formatDate(form.createdAt)}</TableCell>
+              <TableCell>
+                <div className="flex items-center gap-2">
+                  <Switch
+                    checked={form.isPublished}
+                    onCheckedChange={(checked) =>
+                      updateFormAsync({ formId: form.id, isPublished: checked })
+                    }
+                    aria-label="Toggle published"
+                  />
+                  <Badge variant={form.isPublished ? "default" : "secondary"}>
+                    {form.isPublished ? "Published" : "Draft"}
+                  </Badge>
+                </div>
               </TableCell>
-              <TableCell className="text-muted-foreground">
-                {formatDate(form.createdAt)}
+              <TableCell>
+                <div className="flex items-center justify-end gap-1">
+                  <EditFormDialog
+                    form={{ id: form.id, title: form.title, description: form.description }}
+                    trigger={
+                      <Button variant="ghost" size="icon" aria-label="Edit form">
+                        <IconPencil />
+                      </Button>
+                    }
+                  />
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="text-muted-foreground"
+                    aria-label="Delete form"
+                    onClick={() => {
+                      if (confirm(`Delete "${form.title}"? This cannot be undone.`)) {
+                        deleteFormAsync({ formId: form.id });
+                      }
+                    }}
+                  >
+                    <IconTrash />
+                  </Button>
+                </div>
               </TableCell>
             </TableRow>
           ))}
