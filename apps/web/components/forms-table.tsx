@@ -1,13 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { IconPencil, IconTrash } from "@tabler/icons-react";
+import { IconClipboardText, IconPencil, IconTrash } from "@tabler/icons-react";
 
 import { useDeleteForm, useListForms, useUpdateForm } from "~/hooks/api/form";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Skeleton } from "~/components/ui/skeleton";
 import { Switch } from "~/components/ui/switch";
+import { CreateFormDialog } from "~/components/create-form-dialog";
+import { EmptyState } from "~/components/empty-state";
 import {
   Table,
   TableBody,
@@ -41,9 +43,12 @@ export function FormsTable() {
 
   if (!forms || forms.length === 0) {
     return (
-      <div className="rounded-lg border border-dashed p-10 text-center text-muted-foreground">
-        You don&apos;t have any forms yet. Create your first one to get started.
-      </div>
+      <EmptyState
+        icon={<IconClipboardText />}
+        title="No forms yet"
+        description="Create your first form to start collecting responses."
+        action={<CreateFormDialog />}
+      />
     );
   }
 

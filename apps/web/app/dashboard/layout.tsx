@@ -19,7 +19,7 @@ export default function DashboardLayout({
         }
       >
         <AppSidebar variant="inset" />
-        <SidebarInset>
+        <SidebarInset className="bg-texture">
           <SiteHeader />
           {children}
         </SidebarInset>

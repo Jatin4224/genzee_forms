@@ -1,6 +1,7 @@
-import { and, asc, db, desc, eq } from "@repo/database";
+import { and, asc, db, desc, eq, sql } from "@repo/database";
 import { formsTable } from "@repo/database/models/form";
 import { formFieldsTable } from "@repo/database/models/form-field";
+import { formSubmissionTable } from "@repo/database/models/form-submission";
 
 import FormFieldService from "../form-field";
 import {
@@ -76,6 +77,64 @@ class FormService {
       .orderBy(desc(formsTable.createdAt));
 
     return forms;
+  }
+
+  //analytics for the dashboard, scoped to the given user's forms
+  public async getDashboardStats(userId: string) {
+    //each form with its response count (left join so forms with 0 responses are kept)
+    const formsWithCounts = await db
+      .select({
+        id: formsTable.id,
+        title: formsTable.title,
+        isPublished: formsTable.isPublished,
+        createdAt: formsTable.createdAt,
+        responseCount: sql<number>`count(${formSubmissionTable.id})`.mapWith(Number),
+      })
+      .from(formsTable)
+      .leftJoin(formSubmissionTable, eq(formSubmissionTable.formId, formsTable.id))
+      .where(eq(formsTable.createdBy, userId))
+      .groupBy(formsTable.id)
+      .orderBy(desc(formsTable.createdAt));
+
+    const totalForms = formsWithCounts.length;
+    const publishedForms = formsWithCounts.filter((f) => f.isPublished).length;
+    const totalResponses = formsWithCounts.reduce((sum, f) => sum + f.responseCount, 0);
+    const recentForms = formsWithCounts.slice(0, 5);
+
+    //submissions grouped by day (last 30 days) for this user's forms
+    const rawByDay = await db
+      .select({
+        date: sql<string>`to_char(${formSubmissionTable.createdAt}, 'YYYY-MM-DD')`,
+        count: sql<number>`count(*)`.mapWith(Number),
+      })
+      .from(formSubmissionTable)
+      .innerJoin(formsTable, eq(formSubmissionTable.formId, formsTable.id))
+      .where(
+        and(
+          eq(formsTable.createdBy, userId),
+          sql`${formSubmissionTable.createdAt} >= now() - interval '30 days'`,
+        ),
+      )
+      .groupBy(sql`to_char(${formSubmissionTable.createdAt}, 'YYYY-MM-DD')`);
+
+    //fill the gaps so the chart has a continuous 30-day series
+    const countByDate = new Map(rawByDay.map((r) => [r.date, r.count]));
+    const submissionsByDay: { date: string; count: number }[] = [];
+    for (let i = 29; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      const key = d.toISOString().slice(0, 10);
+      submissionsByDay.push({ date: key, count: countByDate.get(key) ?? 0 });
+    }
+
+    return {
+      totalForms,
+      publishedForms,
+      draftForms: totalForms - publishedForms,
+      totalResponses,
+      recentForms,
+      submissionsByDay,
+    };
   }
 
   //public: safe to share, returns only the form's public columns and its fields.

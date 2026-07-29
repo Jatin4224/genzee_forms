@@ -116,6 +116,22 @@ export const useDeleteForm = () => {
   };
 };
 
+export const useDashboardStats = () => {
+  const {
+    data: stats,
+    error,
+    isLoading,
+    status,
+  } = trpc.form.getDashboardStats.useQuery();
+
+  return {
+    stats,
+    error,
+    isLoading,
+    status,
+  };
+};
+
 export const useGetFormMeta = (formId: string) => {
   const {
     data: form,

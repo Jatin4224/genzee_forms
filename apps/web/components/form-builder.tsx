@@ -1,12 +1,21 @@
 "use client";
 
-import { IconArrowDown, IconArrowUp, IconPencil, IconPlus, IconTrash } from "@tabler/icons-react";
+import {
+  IconArrowDown,
+  IconArrowUp,
+  IconListDetails,
+  IconPencil,
+  IconPlus,
+  IconTrash,
+} from "@tabler/icons-react";
 
 import { useDeleteField, useGetFields, useUpdateField } from "~/hooks/api/form-field";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Skeleton } from "~/components/ui/skeleton";
+import { EmptyState } from "~/components/empty-state";
 import { FieldFormDialog } from "~/components/field-form-dialog";
+import { FieldTypeBadge } from "~/components/field-type-badge";
 
 const FIELD_TYPES = ["TEXT", "NUMBER", "EMAIL", "YES_NO", "PASSWORD"] as const;
 type FieldType = (typeof FIELD_TYPES)[number];
@@ -75,20 +84,34 @@ export function FormBuilder({ formId }: { formId: string }) {
       </div>
 
       {ordered.length === 0 ? (
-        <div className="rounded-lg border border-dashed p-10 text-center text-muted-foreground">
-          No fields yet. Add your first field to start building this form.
-        </div>
+        <EmptyState
+          icon={<IconListDetails />}
+          title="No fields yet"
+          description="Add your first field to start building this form."
+          action={
+            <FieldFormDialog
+              formId={formId}
+              nextIndex={nextIndex}
+              trigger={
+                <Button>
+                  <IconPlus />
+                  Add field
+                </Button>
+              }
+            />
+          }
+        />
       ) : (
         <div className="flex flex-col gap-3">
           {ordered.map((field, position) => (
             <div
               key={field.id}
-              className="flex items-center justify-between gap-4 rounded-lg border p-4"
+              className="flex items-center justify-between gap-4 rounded-lg border bg-card p-4 shadow-elevate transition-shadow duration-200 hover:shadow-elevate-lg"
             >
               <div className="flex flex-col gap-1">
                 <div className="flex items-center gap-2">
                   <span className="font-medium">{field.label}</span>
-                  <Badge variant="secondary">{field.type}</Badge>
+                  <FieldTypeBadge type={field.type} />
                   {field.isRequired && <Badge>Required</Badge>}
                 </div>
                 <span className="text-xs text-muted-foreground">

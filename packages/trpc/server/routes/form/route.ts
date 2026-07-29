@@ -8,6 +8,7 @@ import { deleteFormInput, updateFormInput } from "@repo/services/form/model";
 import {
   createFormInputModel,
   createFormOutputModel,
+  dashboardStatsOutputModel,
   formIdOutputModel,
   getFormByIdInputModel,
   getFormByIdOutputModel,
@@ -81,6 +82,23 @@ export const formRouter = router({
       }
 
       return form;
+    }),
+
+  getDashboardStats: authenticatedProcedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: getPath("/getDashboardStats"),
+        tags: TAGS,
+        protect: true,
+      },
+    })
+    .input(z.void())
+    .output(dashboardStatsOutputModel)
+    .query(async ({ ctx }) => {
+      const stats = await formService.getDashboardStats(ctx.user.id);
+
+      return stats;
     }),
 
   getFormMeta: authenticatedProcedure

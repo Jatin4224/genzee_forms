@@ -1,6 +1,7 @@
 "use client";
 
 import { Controller, useForm } from "react-hook-form";
+import { IconCircleCheck } from "@tabler/icons-react";
 
 import { useGetForm } from "~/hooks/api/form";
 import { useSubmitForm } from "~/hooks/api/form-submission";
@@ -66,10 +67,15 @@ export function PublicForm({ formId }: { formId: string }) {
     return (
       <div className="mx-auto w-full max-w-xl p-6">
         <Card>
-          <CardHeader>
-            <CardTitle>Thanks for your response!</CardTitle>
-            <CardDescription>Your submission has been recorded.</CardDescription>
-          </CardHeader>
+          <CardContent className="flex flex-col items-center gap-4 py-12 text-center">
+            <div className="flex size-16 items-center justify-center rounded-full bg-primary/12 text-primary">
+              <IconCircleCheck className="size-9" />
+            </div>
+            <div className="flex flex-col gap-1">
+              <h2 className="text-3xl">Thank you!</h2>
+              <p className="text-muted-foreground">Your response has been recorded.</p>
+            </div>
+          </CardContent>
         </Card>
       </div>
     );
@@ -79,7 +85,7 @@ export function PublicForm({ formId }: { formId: string }) {
     <div className="mx-auto w-full max-w-xl p-6">
       <Card>
         <CardHeader>
-          <CardTitle>{form.title}</CardTitle>
+          <CardTitle className="font-heading text-2xl font-normal">{form.title}</CardTitle>
           {form.description && <CardDescription>{form.description}</CardDescription>}
         </CardHeader>
         <CardContent>

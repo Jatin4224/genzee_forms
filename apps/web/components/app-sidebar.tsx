@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { IconClipboardText, IconInnerShadowTop } from "@tabler/icons-react";
+import { IconClipboardText, IconDashboard, IconInnerShadowTop } from "@tabler/icons-react";
 
 import { useUser } from "~/hooks/api/auth";
 import { NavMain } from "~/components/nav-main";
@@ -18,6 +18,11 @@ import {
 } from "~/components/ui/sidebar";
 
 const navMain = [
+  {
+    title: "Dashboard",
+    url: "/dashboard",
+    icon: IconDashboard,
+  },
   {
     title: "Forms",
     url: "/dashboard/forms",
@@ -36,7 +41,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <SidebarMenuButton asChild className="data-[slot=sidebar-menu-button]:p-1.5!">
               <Link href="/dashboard/forms">
                 <IconInnerShadowTop className="size-5!" />
-                <span className="text-base font-semibold">Genzee Forms</span>
+                <span className="font-heading text-lg">Genzee Forms</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>

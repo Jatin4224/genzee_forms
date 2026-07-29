@@ -1,7 +1,10 @@
 "use client";
 
+import { IconInbox } from "@tabler/icons-react";
+
 import { useGetFields } from "~/hooks/api/form-field";
 import { useListSubmissions } from "~/hooks/api/form-submission";
+import { EmptyState } from "~/components/empty-state";
 import { Skeleton } from "~/components/ui/skeleton";
 import {
   Table,
@@ -34,9 +37,11 @@ export function FormResponses({ formId }: { formId: string }) {
 
   if (!submissions || submissions.length === 0) {
     return (
-      <div className="rounded-lg border border-dashed p-10 text-center text-muted-foreground">
-        No responses yet. Share the form to start collecting submissions.
-      </div>
+      <EmptyState
+        icon={<IconInbox />}
+        title="No responses yet"
+        description="Publish and share your form, and responses will show up here."
+      />
     );
   }
 

@@ -46,6 +46,28 @@ export const getFormMetaOutputModel = z.object({
   isPublished: z.boolean().describe("whether the form is publicly shareable"),
 });
 
+export const dashboardStatsOutputModel = z.object({
+  totalForms: z.number().describe("total number of forms"),
+  publishedForms: z.number().describe("number of published forms"),
+  draftForms: z.number().describe("number of draft forms"),
+  totalResponses: z.number().describe("total submissions across all forms"),
+  recentForms: z.array(
+    z.object({
+      id: z.string(),
+      title: z.string(),
+      isPublished: z.boolean(),
+      createdAt: z.date().nullable(),
+      responseCount: z.number(),
+    }),
+  ),
+  submissionsByDay: z.array(
+    z.object({
+      date: z.string().describe("YYYY-MM-DD"),
+      count: z.number(),
+    }),
+  ),
+});
+
 export const listFormsOutputModel = z.array(
   z.object({
     id: z.string().describe("id of the form"),

@@ -19,7 +19,7 @@ export default function Home() {
   }, [user, isLoading, router]);
 
   return (
-    <main className="min-h-screen min-w-screen flex justify-center items-center">
+    <main className="bg-texture bg-background min-h-screen min-w-screen flex justify-center items-center">
       <p className="shimmer text-muted-foreground text-lg font-medium">
         Getting things ready&hellip;
       </p>

@@ -8,7 +8,7 @@ export default async function PublicFormPage({
   const { form_id } = await params;
 
   return (
-    <main className="min-h-screen bg-muted/30 py-10">
+    <main className="bg-texture min-h-screen bg-background py-10">
       <PublicForm formId={form_id} />
     </main>
   );
