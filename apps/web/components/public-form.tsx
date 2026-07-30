@@ -20,6 +20,8 @@ const INPUT_TYPE: Record<string, string> = {
   PASSWORD: "password",
 };
 
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export function PublicForm({ formId }: { formId: string }) {
   const { form, isLoading, error } = useGetForm(formId);
   const { submitFormAsync, isSuccess } = useSubmitForm();
@@ -28,8 +30,8 @@ export function PublicForm({ formId }: { formId: string }) {
     register,
     control,
     handleSubmit,
-    formState: { isSubmitting },
-  } = useForm<Record<string, unknown>>();
+    formState: { isSubmitting, errors },
+  } = useForm<Record<string, unknown>>({ mode: "onTouched" });
 
   const onSubmit = async (values: Record<string, unknown>) => {
     if (!form) return;
@@ -48,9 +50,22 @@ export function PublicForm({ formId }: { formId: string }) {
 
   if (isLoading) {
     return (
-      <div className="mx-auto flex w-full max-w-xl flex-col gap-4 p-6">
-        <Skeleton className="h-8 w-1/2" />
-        <Skeleton className="h-40 w-full" />
+      <div className="mx-auto w-full max-w-xl p-6">
+        <Card>
+          <CardHeader>
+            <Skeleton className="h-7 w-1/2" />
+            <Skeleton className="h-4 w-3/4" />
+          </CardHeader>
+          <CardContent className="flex flex-col gap-6">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <div key={i} className="flex flex-col gap-2">
+                <Skeleton className="h-4 w-28" />
+                <Skeleton className="h-9 w-full rounded-md" />
+              </div>
+            ))}
+            <Skeleton className="h-10 w-full rounded-md" />
+          </CardContent>
+        </Card>
       </div>
     );
   }
@@ -90,27 +105,39 @@ export function PublicForm({ formId }: { formId: string }) {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
-            {form.fields.map((field) =>
-              field.type === "YES_NO" ? (
+            {form.fields.map((field, i) => {
+              const errorMessage = errors[field.labelKey]?.message as string | undefined;
+              return field.type === "YES_NO" ? (
                 <Controller
                   key={field.id}
                   control={control}
                   name={field.labelKey}
                   defaultValue={false}
-                  rules={{ required: field.isRequired }}
+                  rules={{ required: field.isRequired ? "This field is required" : false }}
                   render={({ field: controlled }) => (
-                    <label className="flex items-center gap-2 text-sm">
-                      <Checkbox
-                        checked={Boolean(controlled.value)}
-                        onCheckedChange={controlled.onChange}
-                      />
-                      {field.label}
-                      {field.isRequired && <span className="text-destructive">*</span>}
-                    </label>
+                    <div
+                      className="animate-in fade-in slide-in-from-bottom-1 fill-mode-both flex flex-col gap-1"
+                      style={{ animationDelay: `${i * 50}ms` }}
+                    >
+                      <label className="flex items-center gap-2 text-sm">
+                        <Checkbox
+                          checked={Boolean(controlled.value)}
+                          onCheckedChange={controlled.onChange}
+                          aria-invalid={!!errorMessage}
+                        />
+                        {field.label}
+                        {field.isRequired && <span className="text-destructive"> *</span>}
+                      </label>
+                      {errorMessage && <p className="text-sm text-destructive">{errorMessage}</p>}
+                    </div>
                   )}
                 />
               ) : (
-                <Field key={field.id}>
+                <Field
+                  key={field.id}
+                  className="animate-in fade-in slide-in-from-bottom-1 fill-mode-both"
+                  style={{ animationDelay: `${i * 50}ms` }}
+                >
                   <FieldLabel htmlFor={field.id}>
                     {field.label}
                     {field.isRequired && <span className="text-destructive"> *</span>}
@@ -119,14 +146,21 @@ export function PublicForm({ formId }: { formId: string }) {
                     id={field.id}
                     type={INPUT_TYPE[field.type] ?? "text"}
                     placeholder={field.placeholder ?? ""}
-                    required={field.isRequired}
-                    {...register(field.labelKey, { required: field.isRequired })}
+                    autoFocus={i === 0}
+                    aria-invalid={!!errorMessage}
+                    {...register(field.labelKey, {
+                      required: field.isRequired ? "This field is required" : false,
+                      ...(field.type === "EMAIL"
+                        ? { pattern: { value: EMAIL_PATTERN, message: "Enter a valid email" } }
+                        : {}),
+                    })}
                   />
+                  {errorMessage && <p className="text-sm text-destructive">{errorMessage}</p>}
                 </Field>
-              ),
-            )}
+              );
+            })}
 
-            <Button type="submit" disabled={isSubmitting}>
+            <Button type="submit" size="lg" className="w-full" disabled={isSubmitting}>
               {isSubmitting ? "Submitting..." : "Submit"}
             </Button>
           </form>

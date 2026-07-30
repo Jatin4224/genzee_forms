@@ -50,75 +50,76 @@
 }
 
 :root {
-  --radius: 0.625rem;
-  /* Prickly Pear — Japanese-clean: warm cream ground, one dusty rose-red accent,
-   * low chroma, soft contrast. A single hue family; no competing secondary. */
-  --background: oklch(0.95 0.008 75);
-  --foreground: oklch(0.32 0.012 40);
-  --card: oklch(0.978 0.006 75);
-  --card-foreground: oklch(0.32 0.012 40);
-  --popover: oklch(0.978 0.006 75);
-  --popover-foreground: oklch(0.32 0.012 40);
-  --primary: oklch(0.53 0.1 25);
-  --primary-foreground: oklch(0.97 0.008 75);
-  --secondary: oklch(0.92 0.008 70);
-  --secondary-foreground: oklch(0.34 0.012 40);
-  --muted: oklch(0.925 0.008 72);
-  --muted-foreground: oklch(0.52 0.014 45);
-  --accent: oklch(0.9 0.02 30);
-  --accent-foreground: oklch(0.32 0.012 40);
-  --destructive: oklch(0.52 0.15 28);
-  --border: oklch(0.885 0.008 70);
-  --input: oklch(0.885 0.008 70);
-  --ring: oklch(0.53 0.1 25);
-  --chart-1: oklch(0.53 0.1 25);
-  --chart-2: oklch(0.62 0.05 60);
-  --chart-3: oklch(0.58 0.045 130);
-  --chart-4: oklch(0.68 0.06 75);
-  --chart-5: oklch(0.55 0.06 40);
-  --sidebar: oklch(0.935 0.01 72);
-  --sidebar-foreground: oklch(0.32 0.012 40);
-  --sidebar-primary: oklch(0.53 0.1 25);
-  --sidebar-primary-foreground: oklch(0.97 0.008 75);
-  --sidebar-accent: oklch(0.9 0.02 30);
-  --sidebar-accent-foreground: oklch(0.32 0.012 40);
-  --sidebar-border: oklch(0.885 0.008 70);
-  --sidebar-ring: oklch(0.53 0.1 25);
+  --radius: 1rem;
+  /* Nuraform: warm sunset — coral accent, peach/pink aurora, white content. */
+  --background: oklch(0.99 0.006 45);
+  --foreground: oklch(0.22 0.012 35);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.22 0.012 35);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.22 0.012 35);
+  --primary: oklch(0.58 0.19 40);
+  --primary-foreground: oklch(0.99 0.005 45);
+  --secondary: oklch(0.965 0.008 50);
+  --secondary-foreground: oklch(0.3 0.02 35);
+  --muted: oklch(0.965 0.008 50);
+  --muted-foreground: oklch(0.52 0.015 40);
+  --accent: oklch(0.95 0.025 45);
+  --accent-foreground: oklch(0.3 0.04 38);
+  --destructive: oklch(0.58 0.22 20);
+  --border: oklch(0.92 0.008 50);
+  --input: oklch(0.92 0.008 50);
+  --ring: oklch(0.58 0.19 40);
+  --chart-1: oklch(0.58 0.19 40);
+  --chart-2: oklch(0.74 0.14 60);
+  --chart-3: oklch(0.66 0.16 350);
+  --chart-4: oklch(0.6 0.16 300);
+  --chart-5: oklch(0.68 0.12 200);
+  --sidebar: oklch(0.99 0.006 45);
+  --sidebar-foreground: oklch(0.22 0.012 35);
+  --sidebar-primary: oklch(0.58 0.19 40);
+  --sidebar-primary-foreground: oklch(0.99 0.005 45);
+  --sidebar-accent: oklch(0.95 0.025 45);
+  --sidebar-accent-foreground: oklch(0.3 0.04 38);
+  --sidebar-border: oklch(0.92 0.008 50);
+  --sidebar-ring: oklch(0.58 0.19 40);
+  --gradient-brand: linear-gradient(135deg, oklch(0.7 0.19 32), oklch(0.72 0.15 355));
 }
 
 .dark {
-  /* Prickly Pear night — soft warm charcoal, cream ink, muted rose accent */
-  --background: oklch(0.24 0.008 40);
-  --foreground: oklch(0.92 0.008 75);
-  --card: oklch(0.28 0.01 40);
-  --card-foreground: oklch(0.92 0.008 75);
-  --popover: oklch(0.28 0.01 40);
-  --popover-foreground: oklch(0.92 0.008 75);
-  --primary: oklch(0.62 0.11 27);
-  --primary-foreground: oklch(0.22 0.01 40);
-  --secondary: oklch(0.33 0.01 45);
-  --secondary-foreground: oklch(0.92 0.008 75);
-  --muted: oklch(0.32 0.008 42);
-  --muted-foreground: oklch(0.7 0.012 70);
-  --accent: oklch(0.36 0.03 30);
-  --accent-foreground: oklch(0.92 0.008 75);
-  --destructive: oklch(0.58 0.14 28);
-  --border: oklch(0.92 0.01 75 / 10%);
-  --input: oklch(0.92 0.01 75 / 14%);
-  --ring: oklch(0.62 0.11 27);
-  --chart-1: oklch(0.64 0.11 27);
-  --chart-2: oklch(0.66 0.05 60);
-  --chart-3: oklch(0.64 0.05 130);
-  --chart-4: oklch(0.7 0.06 75);
-  --chart-5: oklch(0.6 0.06 40);
-  --sidebar: oklch(0.22 0.008 40);
-  --sidebar-foreground: oklch(0.92 0.008 75);
-  --sidebar-primary: oklch(0.62 0.11 27);
-  --sidebar-primary-foreground: oklch(0.22 0.01 40);
-  --sidebar-accent: oklch(0.33 0.02 30);
-  --sidebar-accent-foreground: oklch(0.92 0.008 75);
-  --sidebar-border: oklch(0.92 0.01 75 / 10%);
-  --sidebar-ring: oklch(0.62 0.11 27);
+  /* Nuraform night — warm charcoal canvas, glowing coral accent */
+  --background: oklch(0.19 0.012 35);
+  --foreground: oklch(0.97 0.006 45);
+  --card: oklch(0.23 0.014 35);
+  --card-foreground: oklch(0.97 0.006 45);
+  --popover: oklch(0.23 0.014 35);
+  --popover-foreground: oklch(0.97 0.006 45);
+  --primary: oklch(0.7 0.18 40);
+  --primary-foreground: oklch(0.2 0.01 35);
+  --secondary: oklch(0.27 0.014 38);
+  --secondary-foreground: oklch(0.97 0.006 45);
+  --muted: oklch(0.27 0.014 38);
+  --muted-foreground: oklch(0.72 0.015 45);
+  --accent: oklch(0.32 0.03 40);
+  --accent-foreground: oklch(0.97 0.006 45);
+  --destructive: oklch(0.66 0.2 22);
+  --border: oklch(1 0 0 / 9%);
+  --input: oklch(1 0 0 / 13%);
+  --ring: oklch(0.7 0.18 40);
+  --chart-1: oklch(0.72 0.18 40);
+  --chart-2: oklch(0.78 0.14 60);
+  --chart-3: oklch(0.7 0.16 350);
+  --chart-4: oklch(0.66 0.16 300);
+  --chart-5: oklch(0.72 0.12 200);
+  --sidebar: oklch(0.21 0.013 35);
+  --sidebar-foreground: oklch(0.97 0.006 45);
+  --sidebar-primary: oklch(0.7 0.18 40);
+  --sidebar-primary-foreground: oklch(0.2 0.01 35);
+  --sidebar-accent: oklch(0.32 0.03 40);
+  --sidebar-accent-foreground: oklch(0.97 0.006 45);
+  --sidebar-border: oklch(1 0 0 / 9%);
+  --sidebar-ring: oklch(0.7 0.18 40);
+  --gradient-brand: linear-gradient(135deg, oklch(0.72 0.19 32), oklch(0.72 0.15 355));
 }
 
 /*
@@ -144,14 +145,13 @@
   body {
     @apply bg-background text-foreground;
   }
-  /* hand-drawn display font on page headings/subheadings.
-   * the display font has a single weight, so headings use normal weight and
-   * a tighter line-height rather than bold. */
+  /* elegant display serif on page headings/subheadings — editorial, high-contrast.
+   * single-weight serif, so headings stay normal weight with tight leading. */
   h1,
   h2 {
     @apply font-heading font-normal;
-    line-height: 1.15;
-    letter-spacing: 0.01em;
+    line-height: 1.08;
+    letter-spacing: -0.01em;
   }
 }
 
@@ -225,29 +225,64 @@
  * shadows give cards a gentle "lifted paper" 3D feel.
  */
 :root {
-  /* flat, clean elevation: rely on hairline borders, add only a whisper of shadow */
-  --shadow-elevate: 0 1px 2px oklch(0.4 0.03 40 / 0.05);
-  --shadow-elevate-lg: 0 2px 4px oklch(0.4 0.03 40 / 0.05),
-    0 8px 20px -10px oklch(0.4 0.03 40 / 0.12);
+  /* premium elevation with a faint warm tint */
+  --shadow-elevate: 0 1px 2px oklch(0.5 0.06 40 / 0.06);
+  --shadow-elevate-lg: 0 1px 3px oklch(0.5 0.06 40 / 0.07),
+    0 10px 26px -10px oklch(0.6 0.12 40 / 0.16);
 }
 
 .dark {
-  --shadow-elevate: 0 1px 2px oklch(0 0 0 / 0.3);
-  --shadow-elevate-lg: 0 2px 6px oklch(0 0 0 / 0.35), 0 12px 28px -10px oklch(0 0 0 / 0.45);
+  --shadow-elevate: 0 1px 2px oklch(0 0 0 / 0.35);
+  --shadow-elevate-lg: 0 2px 6px oklch(0 0 0 / 0.4), 0 14px 32px -10px oklch(0 0 0 / 0.5);
 }
 
+/* texture is retired; the class is a no-op so no markup needs to change. */
 .bg-texture {
-  /* the paper photo is itself cream-coloured, so let it BE the surface in light
-   * mode (no blend) — that makes the grain clearly visible. */
-  background-image: url("/bg-texture.png");
-  background-size: 620px;
-  background-repeat: repeat;
+  background-image: none;
 }
 
-.dark .bg-texture {
-  /* the light paper photo would wash out a dark surface, so blend it faintly */
-  background-blend-mode: soft-light;
+/* ── Gradient / aurora system (Nuraform-style) ─────────────────────────── */
+
+.bg-gradient-brand {
+  background-image: var(--gradient-brand);
+}
+
+.text-gradient-brand {
+  background-image: var(--gradient-brand);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* warm sunset aurora — coral / peach / pink / lavender blobs over the base */
+.bg-aurora {
   background-color: var(--background);
+  background-image:
+    radial-gradient(46% 55% at 12% 18%, oklch(0.75 0.15 32 / 0.4), transparent 70%),
+    radial-gradient(42% 50% at 88% 20%, oklch(0.83 0.1 60 / 0.32), transparent 70%),
+    radial-gradient(50% 60% at 78% 88%, oklch(0.8 0.12 352 / 0.34), transparent 72%),
+    radial-gradient(40% 48% at 30% 92%, oklch(0.8 0.08 300 / 0.24), transparent 72%);
+  background-size: 180% 180%;
+  background-repeat: no-repeat;
+  animation: aurora-drift 26s ease-in-out infinite;
+}
+
+.dark .bg-aurora {
+  background-image:
+    radial-gradient(46% 55% at 12% 18%, oklch(0.62 0.17 32 / 0.4), transparent 70%),
+    radial-gradient(42% 50% at 88% 20%, oklch(0.6 0.13 60 / 0.3), transparent 70%),
+    radial-gradient(50% 60% at 78% 88%, oklch(0.6 0.15 352 / 0.32), transparent 72%),
+    radial-gradient(40% 48% at 30% 92%, oklch(0.6 0.1 300 / 0.24), transparent 72%);
+}
+
+@keyframes aurora-drift {
+  0%,
+  100% {
+    background-position: 0% 0%;
+  }
+  50% {
+    background-position: 100% 100%;
+  }
 }
 
 .shadow-elevate {
@@ -256,4 +291,22 @@
 
 .shadow-elevate-lg {
   box-shadow: var(--shadow-elevate-lg);
+}
+
+/* ── Marquee (horizontal scrolling wordmark) ───────────────────────────── */
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee var(--marquee-duration, 22s) linear infinite;
+}
+
+.animate-marquee-reverse {
+  animation: marquee var(--marquee-duration, 22s) linear infinite reverse;
 }

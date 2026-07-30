@@ -26,9 +26,19 @@ export function FormResponses({ formId }: { formId: string }) {
 
   if (fieldsLoading || submissionsLoading) {
     return (
-      <div className="flex flex-col gap-2">
-        <Skeleton className="h-10 w-full" />
-        <Skeleton className="h-10 w-full" />
+      <div className="overflow-hidden rounded-2xl border">
+        <div className="flex gap-6 border-b bg-muted/40 px-4 py-3">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <Skeleton key={i} className="h-3.5 w-24" />
+          ))}
+        </div>
+        {Array.from({ length: 5 }).map((_, r) => (
+          <div key={r} className="flex gap-6 border-b px-4 py-4 last:border-0">
+            {Array.from({ length: 4 }).map((_, c) => (
+              <Skeleton key={c} className="h-4 w-24" />
+            ))}
+          </div>
+        ))}
       </div>
     );
   }

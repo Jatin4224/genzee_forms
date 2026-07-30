@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { IconClipboardText, IconPencil, IconTrash } from "@tabler/icons-react";
 
+import { fireConfetti } from "~/lib/confetti";
 import { useDeleteForm, useListForms, useUpdateForm } from "~/hooks/api/form";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
@@ -33,10 +34,25 @@ export function FormsTable() {
 
   if (isLoading) {
     return (
-      <div className="flex flex-col gap-2">
-        <Skeleton className="h-10 w-full" />
-        <Skeleton className="h-10 w-full" />
-        <Skeleton className="h-10 w-full" />
+      <div className="overflow-hidden rounded-2xl border">
+        <div className="border-b bg-muted/40 px-4 py-3">
+          <Skeleton className="h-3.5 w-28" />
+        </div>
+        {Array.from({ length: 4 }).map((_, i) => (
+          <div
+            key={i}
+            className="flex items-center justify-between gap-4 border-b px-4 py-4 last:border-0"
+          >
+            <div className="flex flex-col gap-2">
+              <Skeleton className="h-4 w-40" />
+              <Skeleton className="h-3 w-24" />
+            </div>
+            <div className="flex items-center gap-3">
+              <Skeleton className="h-6 w-16 rounded-full" />
+              <Skeleton className="size-8 rounded-md" />
+            </div>
+          </div>
+        ))}
       </div>
     );
   }
@@ -78,9 +94,10 @@ export function FormsTable() {
                 <div className="flex items-center gap-2">
                   <Switch
                     checked={form.isPublished}
-                    onCheckedChange={(checked) =>
-                      updateFormAsync({ formId: form.id, isPublished: checked })
-                    }
+                    onCheckedChange={async (checked) => {
+                      await updateFormAsync({ formId: form.id, isPublished: checked });
+                      if (checked) fireConfetti();
+                    }}
                     aria-label="Toggle published"
                   />
                   <Badge variant={form.isPublished ? "default" : "secondary"}>

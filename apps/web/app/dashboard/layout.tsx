@@ -1,3 +1,4 @@
+import { CommandPalette } from "~/components/command-palette"
 import { DashboardGuard } from "~/components/dashboard-guard"
 import { DashboardSidebar } from "~/components/dashboard-sidebar"
 
@@ -8,9 +9,10 @@ export default function DashboardLayout({
 }) {
   return (
     <DashboardGuard>
-      <div className="flex h-svh w-full flex-col overflow-hidden md:flex-row">
+      <CommandPalette />
+      <div className="bg-aurora flex h-svh w-full flex-col overflow-hidden md:flex-row">
         <DashboardSidebar />
-        <main className="bg-texture flex flex-1 flex-col overflow-y-auto">{children}</main>
+        <main className="flex flex-1 flex-col overflow-y-auto">{children}</main>
       </div>
     </DashboardGuard>
   )

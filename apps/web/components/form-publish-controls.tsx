@@ -2,6 +2,7 @@
 
 import { toast } from "sonner";
 
+import { fireConfetti } from "~/lib/confetti";
 import { useGetFormMeta, useUpdateForm } from "~/hooks/api/form";
 import { Badge } from "~/components/ui/badge";
 import { Label } from "~/components/ui/label";
@@ -20,6 +21,7 @@ export function FormPublishControls({ formId }: { formId: string }) {
   const onToggle = async (checked: boolean) => {
     await updateFormAsync({ formId, isPublished: checked });
     toast.success(checked ? "Form published" : "Form unpublished");
+    if (checked) fireConfetti();
   };
 
   return (

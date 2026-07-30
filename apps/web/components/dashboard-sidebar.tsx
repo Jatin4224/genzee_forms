@@ -8,6 +8,7 @@ import {
   IconDashboard,
   IconInnerShadowTop,
   IconLogout,
+  IconSearch,
 } from "@tabler/icons-react";
 
 import { useSignout, useUser } from "~/hooks/api/auth";
@@ -61,8 +62,21 @@ export function DashboardSidebar() {
             <SidebarLabel className="font-semibold text-foreground">Genzee Forms</SidebarLabel>
           </Link>
 
+          {/* Search (opens the ⌘K command palette) */}
+          <button
+            type="button"
+            onClick={() => window.dispatchEvent(new Event("genzee:command-open"))}
+            className="group/sidebar mt-8 flex items-center justify-start gap-2 rounded-md py-2 text-foreground transition-[padding,background-color] duration-150 hover:bg-sidebar-accent hover:px-2 hover:text-sidebar-accent-foreground"
+          >
+            <IconSearch className="h-5 w-5 shrink-0" />
+            <SidebarLabel className="flex-1 text-left text-muted-foreground">Search</SidebarLabel>
+            <SidebarLabel className="rounded border px-1.5 text-[10px] text-muted-foreground">
+              ⌘K
+            </SidebarLabel>
+          </button>
+
           {/* Nav */}
-          <div className="mt-8 flex flex-col gap-1">
+          <div className="mt-1 flex flex-col gap-1">
             {links.map((link) => (
               <SidebarLink key={link.href} link={link} />
             ))}

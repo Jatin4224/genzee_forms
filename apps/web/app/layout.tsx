@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import { Gochi_Hand } from "next/font/google";
+import { Instrument_Serif } from "next/font/google";
 import "./globals.css";
 import { GlobalProviders } from "~/providers/global";
 
@@ -13,10 +13,8 @@ const geistMono = localFont({
   variable: "--font-geist-mono",
 });
 
-//hand-drawn display font for headings (stand-in for "Prickly Pear").
-//to use the real Prickly Pear: drop its file in ./fonts and swap this to
-//localFont({ src: "./fonts/PricklyPear.woff2", variable: "--font-heading-src" }).
-const headingFont = Gochi_Hand({
+//elegant display serif for headings (Nuraform-style editorial feel).
+const headingFont = Instrument_Serif({
   subsets: ["latin"],
   weight: "400",
   variable: "--font-heading-src",
