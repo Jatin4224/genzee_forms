@@ -1,7 +1,5 @@
-import { AppSidebar } from "~/components/app-sidebar"
 import { DashboardGuard } from "~/components/dashboard-guard"
-import { SiteHeader } from "~/components/site-header"
-import { SidebarInset, SidebarProvider } from "~/components/ui/sidebar"
+import { DashboardSidebar } from "~/components/dashboard-sidebar"
 
 export default function DashboardLayout({
   children,
@@ -10,20 +8,10 @@ export default function DashboardLayout({
 }) {
   return (
     <DashboardGuard>
-      <SidebarProvider
-        style={
-          {
-            "--sidebar-width": "calc(var(--spacing) * 72)",
-            "--header-height": "calc(var(--spacing) * 12)",
-          } as React.CSSProperties
-        }
-      >
-        <AppSidebar variant="inset" />
-        <SidebarInset className="bg-texture">
-          <SiteHeader />
-          {children}
-        </SidebarInset>
-      </SidebarProvider>
+      <div className="flex h-svh w-full flex-col overflow-hidden md:flex-row">
+        <DashboardSidebar />
+        <main className="bg-texture flex flex-1 flex-col overflow-y-auto">{children}</main>
+      </div>
     </DashboardGuard>
   )
 }

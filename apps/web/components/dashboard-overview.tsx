@@ -27,9 +27,12 @@ function shortDate(value: string) {
   return new Date(value).toLocaleDateString(undefined, { month: "short", day: "numeric" });
 }
 
-function StatTile({ label, value }: { label: string; value: number }) {
+function StatTile({ label, value, index }: { label: string; value: number; index: number }) {
   return (
-    <Card className="transition-shadow duration-200 hover:shadow-elevate-lg">
+    <Card
+      className="animate-in fade-in slide-in-from-bottom-2 fill-mode-both duration-500 transition-shadow hover:shadow-elevate-lg"
+      style={{ animationDelay: `${index * 70}ms` }}
+    >
       <CardHeader className="gap-1">
         <CardDescription>{label}</CardDescription>
         <CardTitle className="text-3xl font-semibold tabular-nums">{value}</CardTitle>
@@ -58,10 +61,10 @@ export function DashboardOverview() {
     <div className="flex flex-col gap-6">
       {/* Stat tiles */}
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <StatTile label="Total forms" value={stats.totalForms} />
-        <StatTile label="Published" value={stats.publishedForms} />
-        <StatTile label="Drafts" value={stats.draftForms} />
-        <StatTile label="Total responses" value={stats.totalResponses} />
+        <StatTile label="Total forms" value={stats.totalForms} index={0} />
+        <StatTile label="Published" value={stats.publishedForms} index={1} />
+        <StatTile label="Drafts" value={stats.draftForms} index={2} />
+        <StatTile label="Total responses" value={stats.totalResponses} index={3} />
       </div>
 
       {/* Submissions over time */}

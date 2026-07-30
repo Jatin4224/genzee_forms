@@ -17,7 +17,7 @@ export function AuthShell({ children }: { children: React.ReactNode }) {
       </div>
 
       <div className="relative hidden overflow-hidden lg:block">
-        <div className="absolute inset-0 bg-linear-to-br from-primary via-primary to-[oklch(0.74_0.1_78)]" />
+        <div className="absolute inset-0 bg-linear-to-br from-primary via-primary to-[oklch(0.62_0.08_40)]" />
         <div className="relative z-10 flex h-full flex-col items-center justify-center gap-5 p-12 text-center text-primary-foreground">
           <IconInnerShadowTop className="size-14 opacity-90" />
           <p className="font-heading text-4xl leading-tight">Forms, the warm way.</p>

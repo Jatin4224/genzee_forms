@@ -31,7 +31,9 @@ export const getLoggedInUserInfoOutputModel = z
   })
   .nullable();
 
-export const logoutInputModel = z.undefined();
+//no meaningful input. A POST with an empty body is parsed as {} by express.json,
+//so accept an optional empty object rather than z.undefined() (which rejects {}).
+export const logoutInputModel = z.object({}).optional();
 
 export const logoutOutputModel = z.object({
   success: z.boolean().describe("whether the user was logged out"),
