@@ -12,7 +12,8 @@ const ONE_YEAR = 12 * ONE_MONTH;
 //in production the web and API are on different domains, so the auth cookie is
 //cross-site: browsers only send it when sameSite is "none" AND secure is true.
 //in development we keep the stricter localhost-friendly settings.
-const isProd = (process.env.NODE_ENV as string) === "prod";
+const nodeEnv = process.env.NODE_ENV as string;
+const isProd = nodeEnv === "prod" || nodeEnv === "production";
 
 const defaultCookieOptions: CookieOptions = {
   path: "/",

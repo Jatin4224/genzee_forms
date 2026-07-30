@@ -2,7 +2,7 @@ import { z } from "zod";
 
 const envSchema = z.object({
   PORT: z.string().optional(),
-  NODE_ENV: z.enum(["development", "prod"]).default("development"),
+  NODE_ENV: z.enum(["development", "prod", "production"]).default("development"),
   BASE_URL: z.string().default("http://localhost:8000"),
   //origin of the web app, used for CORS. In prod set this to your Vercel URL.
   WEB_ORIGIN: z.string().default("http://localhost:3000"),

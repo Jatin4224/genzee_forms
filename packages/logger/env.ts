@@ -1,7 +1,8 @@
 import { z } from "zod";
 
 const envSchema = z.object({
-  NODE_ENV: z.enum(["development", "prod"]).default("development"),
+  //"production" is Railway/Node's default; accept it so the app can't crash on it
+  NODE_ENV: z.enum(["development", "prod", "production"]).default("development"),
   LOGGER_LEVEL: z.enum(["error", "debug", "info"]).optional(),
 });
 
