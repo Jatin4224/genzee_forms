@@ -310,3 +310,52 @@
 .animate-marquee-reverse {
   animation: marquee var(--marquee-duration, 22s) linear infinite reverse;
 }
+
+/* ── Landing: shine sweep, float bob, dot grid ─────────────────────────── */
+
+/* diagonal light sweep across a filled button */
+@keyframes shine {
+  0% {
+    transform: translateX(-120%) skewX(-12deg);
+  }
+  60%,
+  100% {
+    transform: translateX(220%) skewX(-12deg);
+  }
+}
+
+.animate-shine {
+  animation: shine 3.4s ease-in-out infinite;
+}
+
+/* gentle vertical bob for floating chips / mockup */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-float {
+  animation: float var(--float-duration, 5s) ease-in-out infinite;
+}
+
+/* animated conic ring for the gradient-border button */
+@keyframes spin-slow {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 4s linear infinite;
+}
+
+/* subtle dotted backdrop that sits under the aurora */
+.bg-dot-grid {
+  background-image: radial-gradient(currentColor 1px, transparent 1px);
+  background-size: 22px 22px;
+}

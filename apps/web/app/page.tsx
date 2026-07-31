@@ -1,28 +1,32 @@
-"use client";
-
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
-import { useUser } from "~/hooks/api/auth";
+import { BentoFeatures } from "~/components/landing/bento-features";
+import { Comparison } from "~/components/landing/comparison";
+import { HowItWorks } from "~/components/landing/how-it-works";
+import { LandingCtaBand } from "~/components/landing/landing-cta-band";
+import { LandingFaq } from "~/components/landing/landing-faq";
+import { LandingFooter } from "~/components/landing/landing-footer";
+import { LandingHeader } from "~/components/landing/landing-header";
+import { LandingHero } from "~/components/landing/landing-hero";
+import { StatsBand } from "~/components/landing/stats-band";
 
 export default function Home() {
-  const router = useRouter();
-  const { user, isLoading } = useUser();
-
-  useEffect(() => {
-    if (isLoading) return; // wait for the query to resolve
-
-    if (user?.id) {
-      router.replace("/dashboard");
-    } else {
-      router.replace("/login");
-    }
-  }, [user, isLoading, router]);
-
   return (
-    <main className="bg-aurora min-h-screen min-w-screen flex justify-center items-center">
-      <p className="shimmer text-muted-foreground text-lg font-medium">
-        Getting things ready&hellip;
-      </p>
-    </main>
+    <div className="min-h-svh bg-background">
+      <LandingHeader />
+      <main>
+        <LandingHero />
+        <StatsBand />
+        <HowItWorks />
+        {/* alternating tinted bands give the page a clear vertical rhythm */}
+        <div className="bg-secondary/30">
+          <BentoFeatures />
+        </div>
+        <Comparison />
+        <div className="bg-secondary/30">
+          <LandingFaq />
+        </div>
+        <LandingCtaBand />
+      </main>
+      <LandingFooter />
+    </div>
   );
 }
