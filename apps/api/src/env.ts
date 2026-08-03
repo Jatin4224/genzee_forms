@@ -6,6 +6,11 @@ const envSchema = z.object({
   BASE_URL: z.string().default("http://localhost:8000"),
   //origin of the web app, used for CORS. In prod set this to your Vercel URL.
   WEB_ORIGIN: z.string().default("http://localhost:3000"),
+  //injected by Railway at runtime. surfaced on /health so "which commit is live?"
+  //is answerable with one request - a stale deploy is otherwise invisible until
+  //some field the client sends starts silently disappearing.
+  RAILWAY_GIT_COMMIT_SHA: z.string().optional(),
+  RAILWAY_GIT_BRANCH: z.string().optional(),
 });
 
 function createEnv(env: NodeJS.ProcessEnv) {

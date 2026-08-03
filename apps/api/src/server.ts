@@ -42,7 +42,13 @@ app.get("/", (req, res) => {
 });
 
 app.get("/health", (req, res) => {
-  return res.json({ message: "Genzee Forms server is healthy", healthy: true });
+  return res.json({
+    message: "Genzee Forms server is healthy",
+    healthy: true,
+    //null locally, the deployed commit on Railway
+    commit: env.RAILWAY_GIT_COMMIT_SHA ?? null,
+    branch: env.RAILWAY_GIT_BRANCH ?? null,
+  });
 });
 
 logger.debug(`openapi.json: ${env.BASE_URL}/openapi.json`);
