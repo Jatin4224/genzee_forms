@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import {
   DndContext,
   KeyboardSensor,
@@ -19,8 +20,15 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { IconGripVertical, IconListDetails, IconPencil, IconPlus, IconTrash } from "@tabler/icons-react";
+import {
+  IconGripVertical,
+  IconListDetails,
+  IconPencil,
+  IconPlus,
+  IconTrash,
+} from "@tabler/icons-react";
 
+import { useGetFormMeta } from "~/hooks/api/form";
 import { useDeleteField, useGetFields, useUpdateField } from "~/hooks/api/form-field";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
@@ -28,6 +36,12 @@ import { Skeleton } from "~/components/ui/skeleton";
 import { EmptyState } from "~/components/empty-state";
 import { FieldFormDialog } from "~/components/field-form-dialog";
 import { FieldTypeBadge } from "~/components/field-type-badge";
+import {
+  CHARACTER_EXPRESSION_LABELS,
+  CHARACTER_IMAGES,
+  parseFieldDescription,
+  type FormTemplateId,
+} from "~/components/form-templates";
 import { cn } from "~/lib/utils";
 
 const FIELD_TYPES = ["TEXT", "NUMBER", "EMAIL", "YES_NO", "PASSWORD"] as const;
@@ -47,15 +61,19 @@ type Field = {
 function SortableFieldRow({
   field,
   formId,
+  template,
   onDelete,
 }: {
   field: Field;
   formId: string;
+  template?: FormTemplateId;
   onDelete: (id: string) => void;
 }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: field.id,
   });
+
+  const { expression } = parseFieldDescription(field.description);
 
   return (
     <div
@@ -76,6 +94,15 @@ function SortableFieldRow({
         >
           <IconGripVertical className="size-5" />
         </button>
+        {/* the face the character pulls for this question - only the Conversation style shows it */}
+        {template === "CONVERSATION" && (
+          <Image
+            src={CHARACTER_IMAGES[expression]}
+            alt={CHARACTER_EXPRESSION_LABELS[expression]}
+            title={`Expression: ${CHARACTER_EXPRESSION_LABELS[expression]}`}
+            className="size-9 shrink-0 rounded-full bg-muted object-cover object-top"
+          />
+        )}
         <div className="flex min-w-0 flex-col gap-1">
           <div className="flex items-center gap-2">
             <span className="truncate font-medium">{field.label}</span>
@@ -98,7 +125,9 @@ function SortableFieldRow({
             type: field.type as FieldType,
             placeholder: field.placeholder,
             isRequired: field.isRequired,
+            description: field.description,
           }}
+          template={template}
           trigger={
             <Button type="button" variant="ghost" size="icon" aria-label="Edit field">
               <IconPencil />
@@ -122,6 +151,8 @@ function SortableFieldRow({
 
 export function FormBuilder({ formId }: { formId: string }) {
   const { fields, isLoading } = useGetFields(formId);
+  //same query the style picker on this page already runs, so it costs nothing extra
+  const { form } = useGetFormMeta(formId);
   const { updateFieldAsync } = useUpdateField();
   const { deleteFieldAsync } = useDeleteField();
 
@@ -136,9 +167,7 @@ export function FormBuilder({ formId }: { formId: string }) {
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
   );
 
-  const nextIndex = items.length
-    ? Math.max(...items.map((field) => Number(field.index))) + 1
-    : 1;
+  const nextIndex = items.length ? Math.max(...items.map((field) => Number(field.index))) + 1 : 1;
 
   const onDragEnd = async (event: DragEndEvent) => {
     const { active, over } = event;
@@ -176,6 +205,7 @@ export function FormBuilder({ formId }: { formId: string }) {
     <FieldFormDialog
       formId={formId}
       nextIndex={nextIndex}
+      template={form?.template}
       trigger={
         <Button>
           <IconPlus />
@@ -215,6 +245,7 @@ export function FormBuilder({ formId }: { formId: string }) {
                   key={field.id}
                   field={field}
                   formId={formId}
+                  template={form?.template}
                   onDelete={(id) => deleteFieldAsync({ id })}
                 />
               ))}

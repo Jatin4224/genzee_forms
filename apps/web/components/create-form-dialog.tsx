@@ -1,10 +1,20 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { IconPlus, IconTrash } from "@tabler/icons-react";
 
 import { useCreateForm } from "~/hooks/api/form";
+import { CharacterExpressionPicker } from "~/components/character-expression-picker";
+import {
+  DEFAULT_CHARACTER_EXPRESSION,
+  DEFAULT_TEMPLATE_ID,
+  FORM_TEMPLATES,
+  encodeFieldDescription,
+  type CharacterExpression,
+  type FormTemplateId,
+} from "~/components/form-templates";
 import { Button } from "~/components/ui/button";
 import { Checkbox } from "~/components/ui/checkbox";
 import {
@@ -34,6 +44,8 @@ type FieldValue = {
   type: (typeof FIELD_TYPES)[number];
   placeholder?: string;
   isRequired: boolean;
+  //only asked for - and only used by - the Conversation style
+  expression: CharacterExpression;
 };
 
 type CreateFormValues = {
@@ -56,11 +68,27 @@ const emptyField: FieldValue = {
   type: "TEXT",
   placeholder: "",
   isRequired: false,
+  expression: DEFAULT_CHARACTER_EXPRESSION,
 };
 
-export function CreateFormDialog() {
+interface CreateFormDialogProps {
+  //the style the new form is created with. drives whether each field is asked for
+  //a character expression, since only Conversation renders one
+  template?: FormTemplateId;
+  //replaces the default "New Form" button, so the templates gallery can open the
+  //same dialog from its own card
+  trigger?: React.ReactNode;
+}
+
+export function CreateFormDialog({
+  template = DEFAULT_TEMPLATE_ID,
+  trigger,
+}: CreateFormDialogProps = {}) {
   const [open, setOpen] = useState(false);
+  const router = useRouter();
   const { createFormAsync, isError, error } = useCreateForm();
+
+  const asksForExpression = template === "CONVERSATION";
 
   const {
     register,
@@ -79,12 +107,15 @@ export function CreateFormDialog() {
   const { fields, append, remove } = useFieldArray({ control, name: "fields" });
 
   const onSubmit = async (values: CreateFormValues) => {
-    await createFormAsync({
+    const { id } = await createFormAsync({
       title: values.title,
       description: values.description || undefined,
+      template,
       fields: values.fields.map((field, idx) => ({
         label: field.label,
         labelKey: slugify(field.label) || `field_${idx + 1}`,
+        //the expression rides along in the description column - see character.ts
+        description: encodeFieldDescription(field.expression),
         placeholder: field.placeholder || undefined,
         isRequired: field.isRequired,
         index: idx + 1, //position of the field within the form
@@ -94,21 +125,28 @@ export function CreateFormDialog() {
 
     reset();
     setOpen(false);
+
+    //land on the builder so the form can be arranged and published straight away -
+    //the gallery has no other way back to what was just created
+    router.push(`/dashboard/forms/${id}`);
   };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>
-          <IconPlus />
-          New Form
-        </Button>
+        {trigger ?? (
+          <Button>
+            <IconPlus />
+            New Form
+          </Button>
+        )}
       </DialogTrigger>
       <DialogContent className="max-h-[85vh] overflow-y-auto sm:max-w-2xl">
         <DialogHeader>
           <DialogTitle>Create a new form</DialogTitle>
           <DialogDescription>
-            Give your form a title and add the fields you want to collect.
+            Give your form a title and add the fields you want to collect. It will use the{" "}
+            <span className="text-foreground">{FORM_TEMPLATES[template].name}</span> style.
           </DialogDescription>
         </DialogHeader>
 
@@ -192,6 +230,19 @@ export function CreateFormDialog() {
                     {...register(`fields.${index}.placeholder` as const)}
                   />
                 </Field>
+
+                {asksForExpression && (
+                  <Controller
+                    control={control}
+                    name={`fields.${index}.expression` as const}
+                    render={({ field: expressionField }) => (
+                      <CharacterExpressionPicker
+                        value={expressionField.value}
+                        onChange={expressionField.onChange}
+                      />
+                    )}
+                  />
+                )}
 
                 <Controller
                   control={control}

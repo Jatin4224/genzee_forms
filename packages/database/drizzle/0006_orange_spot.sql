@@ -1,0 +1,1 @@
+ALTER TABLE "forms" ADD COLUMN "template" varchar(40) DEFAULT 'CLASSIC' NOT NULL;

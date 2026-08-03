@@ -31,7 +31,8 @@ class FormService {
   }
 
   public async createForm(payload: CreateFormInputType) {
-    const { title, description, createdBy, fields } = await createFormInput.parseAsync(payload);
+    const { title, description, createdBy, template, fields } =
+      await createFormInput.parseAsync(payload);
 
     //form and its fields must be created together, so wrap them in a transaction
     const formId = await db.transaction(async (tx) => {
@@ -41,6 +42,8 @@ class FormService {
           title,
           description,
           createdBy,
+          //undefined leaves the column default in place
+          ...(template ? { template } : {}),
         })
         .returning({
           id: formsTable.id,
@@ -149,6 +152,7 @@ class FormService {
           title: formsTable.title,
           description: formsTable.description,
           isPublished: formsTable.isPublished,
+          template: formsTable.template,
         },
         field: {
           id: formFieldsTable.id,
@@ -197,6 +201,7 @@ class FormService {
         title: formsTable.title,
         description: formsTable.description,
         isPublished: formsTable.isPublished,
+        template: formsTable.template,
       })
       .from(formsTable)
       .where(eq(formsTable.id, formId));

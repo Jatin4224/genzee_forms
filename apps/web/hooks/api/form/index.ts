@@ -68,8 +68,14 @@ export const useUpdateForm = () => {
     isSuccess,
     status,
   } = trpc.form.updateForm.useMutation({
-    onSuccess: async () => {
-      await utils.form.listForms.invalidate();
+    onSuccess: async (_data, variables) => {
+      //queries have staleTime: Infinity, so the builder's own view of the form has to
+      //be invalidated explicitly or it keeps showing the pre-update values
+      await Promise.all([
+        utils.form.listForms.invalidate(),
+        utils.form.getFormMeta.invalidate({ formId: variables.formId }),
+        utils.form.getForm.invalidate({ formId: variables.formId }),
+      ]);
     },
     onError: (error) => {
       toast.error(error.message ?? "Could not update form");

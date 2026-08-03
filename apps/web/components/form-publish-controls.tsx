@@ -8,6 +8,7 @@ import { Badge } from "~/components/ui/badge";
 import { Label } from "~/components/ui/label";
 import { Skeleton } from "~/components/ui/skeleton";
 import { Switch } from "~/components/ui/switch";
+import { FormTemplatePicker } from "~/components/form-template-picker";
 import { ShareFormButton } from "~/components/share-form-button";
 
 export function FormPublishControls({ formId }: { formId: string }) {
@@ -26,6 +27,7 @@ export function FormPublishControls({ formId }: { formId: string }) {
 
   return (
     <div className="flex items-center gap-3">
+      <FormTemplatePicker formId={formId} />
       <div className="flex items-center gap-2">
         <Switch id="publish" checked={form.isPublished} onCheckedChange={onToggle} />
         <Label htmlFor="publish" className="cursor-pointer">

@@ -7,6 +7,7 @@ import {
   IconClipboardText,
   IconDashboard,
   IconInnerShadowTop,
+  IconLayoutGrid,
   IconLogout,
   IconSearch,
 } from "@tabler/icons-react";
@@ -32,6 +33,11 @@ const links: SidebarLinkItem[] = [
     label: "Forms",
     href: "/dashboard/forms",
     icon: <IconClipboardText className="h-5 w-5 shrink-0 text-foreground" />,
+  },
+  {
+    label: "Templates",
+    href: "/dashboard/templates",
+    icon: <IconLayoutGrid className="h-5 w-5 shrink-0 text-foreground" />,
   },
 ];
 

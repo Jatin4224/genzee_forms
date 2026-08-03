@@ -49,7 +49,15 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
-:root {
+/*
+ * .light-scope re-declares the light palette on a subtree. Needed because the
+ * public form is always light (forcedTheme in providers/global.tsx) while the
+ * dashboard can be dark — so template previews inside the dashboard must opt
+ * back into light to show what a real visitor sees. Sharing the selector with
+ * :root keeps the two in sync for free.
+ */
+:root,
+.light-scope {
   --radius: 1rem;
   /* Nuraform: warm sunset — coral accent, peach/pink aurora, white content. */
   --background: oklch(0.99 0.006 45);
@@ -224,7 +232,8 @@
  * colour the element already has, so it reads as tinted paper. Warm, soft
  * shadows give cards a gentle "lifted paper" 3D feel.
  */
-:root {
+:root,
+.light-scope {
   /* premium elevation with a faint warm tint */
   --shadow-elevate: 0 1px 2px oklch(0.5 0.06 40 / 0.06);
   --shadow-elevate-lg: 0 1px 3px oklch(0.5 0.06 40 / 0.07),

@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { createFormFieldInput, formFieldTypeEnum } from "@repo/services/form-field/model";
+import { formTemplateEnum } from "@repo/services/form/model";
 
 //createdBy is NOT taken from the client, it comes from ctx.user.id
 export const getFormByIdInputModel = z.object({
@@ -10,6 +11,7 @@ export const getFormByIdOutputModel = z.object({
   id: z.string().describe("id of the form"),
   title: z.string().describe("title of the form"),
   description: z.string().nullable().describe("description of the form"),
+  template: formTemplateEnum.describe("visual style the form renders with"),
   fields: z.array(
     z.object({
       id: z.string().describe("id of the field"),
@@ -28,6 +30,7 @@ export const getFormByIdOutputModel = z.object({
 export const createFormInputModel = z.object({
   title: z.string().describe("title of the form"),
   description: z.string().describe("description of the form").optional(),
+  template: formTemplateEnum.describe("visual style the public form renders with").optional(),
   fields: z.array(createFormFieldInput).describe("fields of the form"),
 });
 
@@ -44,6 +47,7 @@ export const getFormMetaOutputModel = z.object({
   title: z.string().describe("title of the form"),
   description: z.string().nullable().describe("description of the form"),
   isPublished: z.boolean().describe("whether the form is publicly shareable"),
+  template: formTemplateEnum.describe("visual style the form renders with"),
 });
 
 export const dashboardStatsOutputModel = z.object({

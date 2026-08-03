@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import {
   IconClipboardText,
   IconLayoutDashboard,
+  IconLayoutGrid,
   IconPlus,
 } from "@tabler/icons-react";
 
@@ -61,6 +62,11 @@ export function CommandPalette() {
           <CommandItem onSelect={() => go("/dashboard/forms")}>
             <IconClipboardText />
             Forms
+            <CommandShortcut>Go</CommandShortcut>
+          </CommandItem>
+          <CommandItem onSelect={() => go("/dashboard/templates")}>
+            <IconLayoutGrid />
+            Templates
             <CommandShortcut>Go</CommandShortcut>
           </CommandItem>
           <CommandItem onSelect={() => go("/dashboard/forms")}>
