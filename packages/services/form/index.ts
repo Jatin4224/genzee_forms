@@ -217,6 +217,14 @@ class FormService {
 
     await this.assertFormOwned(formId, userId);
 
+    //zod strips keys this schema does not know about, so a client running ahead of
+    //the deployed api can send a field that silently vanishes and leaves nothing to
+    //update. drizzle's own error for that is "No values to set", which says nothing
+    //about the cause - fail with something the caller can act on instead.
+    if (Object.keys(rest).length === 0) {
+      throw new Error(`No supported fields to update were provided for this form`);
+    }
+
     await db.update(formsTable).set(rest).where(eq(formsTable.id, formId));
 
     return {
