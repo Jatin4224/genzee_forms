@@ -66,9 +66,6 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"form">)
           <Button type="submit" disabled={isSubmitting}>
             {isSubmitting ? "Signing in..." : "Login"}
           </Button>
-          <Button variant="outline" type="button">
-            Login with Google
-          </Button>
           <FieldDescription className="text-center">
             Don&apos;t have an account?{" "}
             <Link href="/signup" className="underline underline-offset-4">
