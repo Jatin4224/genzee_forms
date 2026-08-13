@@ -5,7 +5,12 @@
     "build": {
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "outputs": [".next/**", "!.next/cache/**"]
+      "outputs": [".next/**", "!.next/cache/**"],
+      //read by next.config.js to build the /trpc rewrite. turbo strips undeclared
+      //vars from the build env, so without this the rewrite silently does not happen
+      //and the browser gets Next's html 404 instead of the api. NEXT_PUBLIC_* needs
+      //no entry - turbo passes that prefix through for next.js automatically
+      "env": ["API_ORIGIN"]
     },
     "lint": {
       "dependsOn": ["^lint"]
