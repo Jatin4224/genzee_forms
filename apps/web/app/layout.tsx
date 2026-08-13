@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { Instrument_Serif } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import { GlobalProviders } from "~/providers/global";
 
@@ -56,6 +57,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${headingFont.variable}`}
       >
         <GlobalProviders>{children}</GlobalProviders>
+        <Analytics />
       </body>
     </html>
   );
