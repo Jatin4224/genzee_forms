@@ -103,7 +103,8 @@ function Answer({
       <Controller
         control={control}
         name={field.labelKey}
-        defaultValue={false}
+        //null means unanswered, so neither button starts selected - see getFieldRules
+        defaultValue={null}
         rules={rules}
         render={({ field: controlled }) => (
           <div className="flex flex-wrap gap-3">
@@ -111,7 +112,7 @@ function Answer({
               { label: "Yes", value: true },
               { label: "No", value: false },
             ].map((option) => {
-              const isSelected = Boolean(controlled.value) === option.value;
+              const isSelected = controlled.value === option.value;
 
               return (
                 <button

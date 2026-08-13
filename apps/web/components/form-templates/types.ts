@@ -29,6 +29,10 @@ export interface FormTemplateProps {
   onSubmit: React.FormEventHandler<HTMLFormElement>;
   //true when the response has been recorded; templates render their own thank-you state
   isSuccess: boolean;
+  //true only inside the gallery preview. most templates can ignore it - it exists for
+  //styles that animate or reveal over time, which would otherwise preview as a blank
+  //card. such a template should render a representative finished state and start no timers
+  isPreview?: boolean;
 }
 
 export interface FormTemplateEntry {

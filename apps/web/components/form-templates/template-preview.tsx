@@ -45,8 +45,11 @@ export function TemplatePreview({
       )}
       aria-hidden="true"
     >
+      {/* origin-top-LEFT is load-bearing: the width above compensates for the scale
+          by growing from the left edge, so scaling about the centre would push the
+          content sideways by half the overflow and clip it out of the card */}
       <div
-        className="origin-top"
+        className="origin-top-left"
         style={{ transform: `scale(${previewScale})`, width: `${100 / previewScale}%` }}
       >
         <Renderer
@@ -57,6 +60,7 @@ export function TemplatePreview({
           trigger={trigger}
           isSubmitting={false}
           isSuccess={false}
+          isPreview
           onSubmit={(event) => event.preventDefault()}
         />
       </div>

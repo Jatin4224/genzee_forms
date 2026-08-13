@@ -27,6 +27,15 @@ export function getInputType(field: PublicFormField) {
 //validation rules for a field. exported so a template with fully custom markup can
 //still register its inputs with the same rules instead of re-deriving them
 export function getFieldRules(field: PublicFormField): RegisterOptions {
+  //a yes/no field cannot use `required`: react-hook-form counts a boolean false as
+  //empty, so answering "No" would fail validation and there would be no way to
+  //answer the question at all. unanswered is null instead - see the Controllers below
+  if (field.type === "YES_NO") {
+    return field.isRequired
+      ? { validate: (value) => typeof value === "boolean" || "This field is required" }
+      : {};
+  }
+
   return {
     required: field.isRequired ? "This field is required" : false,
     ...(field.type === "EMAIL"
@@ -72,7 +81,9 @@ export function FieldControl({
       <Controller
         control={control}
         name={field.labelKey}
-        defaultValue={false}
+        //null, not false: false is a real answer ("No"), so it cannot double as
+        //"not answered yet" or a required yes/no could never be satisfied
+        defaultValue={null}
         rules={rules}
         render={({ field: controlled }) => (
           <div className={cn("flex flex-col gap-1", className)} style={style}>

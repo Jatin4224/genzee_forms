@@ -1,5 +1,6 @@
 import { ClassicTemplate } from "./classic";
 import { ConversationTemplate } from "./conversation";
+import { WhatsappTemplate } from "./whatsapp";
 import type { FormTemplateEntry, FormTemplateId } from "./types";
 
 //every visual style a form can render with.
@@ -18,6 +19,14 @@ export const FORM_TEMPLATES: Record<FormTemplateId, FormTemplateEntry> = {
     Renderer: ConversationTemplate,
     //a full-viewport scene, so it needs shrinking much further than a card to preview
     previewScale: 0.32,
+  },
+  WHATSAPP: {
+    name: "Chat",
+    description:
+      "A messaging thread. Questions arrive one at a time, each after a pause where the sender is typing.",
+    Renderer: WhatsappTemplate,
+    //also full-viewport, but a chat reads at a smaller size than a single big question
+    previewScale: 0.38,
   },
 };
 
