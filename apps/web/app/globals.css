@@ -9,6 +9,12 @@
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --font-heading: var(--font-heading-src);
+  /* handwriting, used by the Paper form template only */
+  --font-hand: var(--font-hand-src);
+  /* 8-bit type, used by the Quest form template only */
+  --font-pixel: var(--font-pixel-src);
+  /* comic lettering, used by the Comic form template only */
+  --font-comic: var(--font-comic-src);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);

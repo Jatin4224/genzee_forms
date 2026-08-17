@@ -6,7 +6,28 @@ import { usersTable } from "./user";
 //in apps/web/components/form-templates (via the trpc output type).
 //stored as a varchar and not a pgEnum on purpose - adding a style is a code-only
 //change and must not need a migration.
-export const FORM_TEMPLATE_NAMES = ["CLASSIC", "CONVERSATION", "WHATSAPP", "STORY"] as const;
+export const FORM_TEMPLATE_NAMES = [
+  "CLASSIC",
+  "CONVERSATION",
+  "WHATSAPP",
+  "STORY",
+  "PAPER",
+  "TERMINAL",
+  "QUEST",
+  "COMIC",
+  "DEPARTURES",
+  "SPREADSHEET",
+  "CORKBOARD",
+  "POLAROID",
+  "RECEIPT",
+  "MENU",
+  "CHALKBOARD",
+  "VENDING",
+  "PASSPORT",
+  "BLUEPRINT",
+  "NEWSPAPER",
+  "TYPEWRITER",
+] as const;
 
 export type FormTemplateName = (typeof FORM_TEMPLATE_NAMES)[number];
 

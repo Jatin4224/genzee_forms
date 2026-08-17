@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import { Instrument_Serif } from "next/font/google";
+import { Bangers, Caveat, Instrument_Serif, Press_Start_2P } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import { GlobalProviders } from "~/providers/global";
@@ -19,6 +19,30 @@ const headingFont = Instrument_Serif({
   subsets: ["latin"],
   weight: "400",
   variable: "--font-heading-src",
+  display: "swap",
+});
+
+//handwriting, used only by the Paper form template for the title and the answers
+const handFont = Caveat({
+  subsets: ["latin"],
+  weight: ["400", "600"],
+  variable: "--font-hand-src",
+  display: "swap",
+});
+
+//8-bit type, used only by the Quest form template
+const pixelFont = Press_Start_2P({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-pixel-src",
+  display: "swap",
+});
+
+//comic lettering, used only by the Comic form template
+const comicFont = Bangers({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-comic-src",
   display: "swap",
 });
 
@@ -54,7 +78,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${headingFont.variable}`}
+        className={`${geistSans.variable} ${geistMono.variable} ${headingFont.variable} ${handFont.variable} ${pixelFont.variable} ${comicFont.variable}`}
       >
         <GlobalProviders>{children}</GlobalProviders>
         <Analytics />
