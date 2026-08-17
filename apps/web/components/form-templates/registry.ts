@@ -1,5 +1,6 @@
 import { ClassicTemplate } from "./classic";
 import { ConversationTemplate } from "./conversation";
+import { StoryTemplate } from "./story";
 import { WhatsappTemplate } from "./whatsapp";
 import type { FormTemplateEntry, FormTemplateId } from "./types";
 
@@ -27,6 +28,14 @@ export const FORM_TEMPLATES: Record<FormTemplateId, FormTemplateEntry> = {
     Renderer: WhatsappTemplate,
     //also full-viewport, but a chat reads at a smaller size than a single big question
     previewScale: 0.38,
+  },
+  STORY: {
+    name: "Story",
+    description:
+      "Full-screen questions on bold gradients, with segmented progress bars and tap-to-advance.",
+    Renderer: StoryTemplate,
+    //a full-viewport scene built around one large question, same as Conversation
+    previewScale: 0.32,
   },
 };
 
